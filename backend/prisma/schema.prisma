@@ -1,0 +1,293 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// ==============================================
+// CORE MODELS
+// ==============================================
+
+model User {
+  id                String      @id @default(uuid())
+  username          String      @unique
+  email             String      @unique
+  password_hash     String
+  full_name         String?
+  bio               String?
+  title             String?
+  organization      String?
+  location          String?
+  social_links      Json?
+  profile_image_url String?
+  is_admin          Boolean     @default(false)
+  is_verified       Boolean     @default(false)
+  is_active         Boolean     @default(true)
+  last_login_at     DateTime?
+  created_at        DateTime    @default(now())
+  updated_at        DateTime    @updatedAt
+
+  // Relationships
+  workbooks         Workbook[]
+  favorites         Favorite[]
+  followers         Follow[]    @relation("Following")
+  following         Follow[]    @relation("Followers")
+  curated_features  FeaturedItem[]
+  refresh_tokens    RefreshToken[]
+  reports_made      Report[]    @relation("Reporter")
+  reports_received  Report[]    @relation("ReportedUser")
+
+  // Indexes
+  @@index([username])
+  @@index([email])
+  @@index([created_at])
+  @@index([is_active])
+  @@map("users")
+}
+
+model Workbook {
+  id                  String      @id @default(uuid())
+  title               String
+  description         String?
+  sigma_embed_url     String
+  thumbnail_url       String?
+  is_publicly_visible Boolean     @default(true)
+  allow_copy          Boolean     @default(true)
+  view_count          Int         @default(0)
+  favorite_count      Int         @default(0)
+  is_featured         Boolean     @default(false)
+  featured_at         DateTime?
+  published_at        DateTime    @default(now())
+  updated_at          DateTime    @updatedAt
+
+  // Foreign Keys
+  author_id           String
+
+  // Relationships
+  author              User        @relation(fields: [author_id], references: [id], onDelete: Cascade)
+  tags                WorkbookTag[]
+  favorited_by        Favorite[]
+  features            FeaturedItem[] @relation(name: "FeaturedWorkbook")
+  reports             Report[]    @relation("ReportedWorkbook")
+  views               WorkbookView[]
+
+  // Indexes
+  @@index([author_id])
+  @@index([published_at])
+  @@index([is_publicly_visible])
+  @@index([is_featured])
+  @@index([view_count])
+  @@index([favorite_count])
+  @@map("workbooks")
+}
+
+model Tag {
+  id          Int     @id @default(autoincrement())
+  name        String  @unique
+  description String?
+  color       String? // Hex color
+  is_active   Boolean @default(true)
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  // Relationships
+  workbooks   WorkbookTag[]
+
+  // Indexes
+  @@index([name])
+  @@index([is_active])
+  @@map("tags")
+}
+
+model WorkbookTag {
+  workbook_id String
+  tag_id      Int
+  created_at  DateTime @default(now())
+
+  // Relationships
+  workbook    Workbook @relation(fields: [workbook_id], references: [id], onDelete: Cascade)
+  tag         Tag      @relation(fields: [tag_id], references: [id], onDelete: Cascade)
+
+  @@id([workbook_id, tag_id])
+  @@index([tag_id])
+  @@map("workbook_tags")
+}
+
+// ==============================================
+// SOCIAL MODELS
+// ==============================================
+
+model Favorite {
+  user_id     String
+  workbook_id String
+  created_at  DateTime @default(now())
+
+  // Relationships
+  user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  workbook    Workbook @relation(fields: [workbook_id], references: [id], onDelete: Cascade)
+
+  @@id([user_id, workbook_id])
+  @@index([user_id])
+  @@index([workbook_id])
+  @@index([created_at])
+  @@map("favorites")
+}
+
+model Follow {
+  follower_id  String
+  following_id String
+  created_at   DateTime @default(now())
+
+  // Relationships
+  follower     User     @relation("Followers", fields: [follower_id], references: [id], onDelete: Cascade)
+  following    User     @relation("Following", fields: [following_id], references: [id], onDelete: Cascade)
+
+  @@id([follower_id, following_id])
+  @@index([follower_id])
+  @@index([following_id])
+  @@index([created_at])
+  @@map("follows")
+}
+
+// ==============================================
+// ADMIN & CURATION MODELS
+// ==============================================
+
+model FeaturedItem {
+  id                  Int      @id @default(autoincrement())
+  item_id             String
+  item_type           ItemType
+  feature_type        FeatureType
+  featured_date       DateTime
+  expires_at          DateTime?
+  is_active           Boolean  @default(true)
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+
+  // Foreign Keys
+  curated_by_admin_id String
+
+  // Relationships
+  curated_by          User     @relation(fields: [curated_by_admin_id], references: [id])
+  workbook            Workbook? @relation(name: "FeaturedWorkbook", fields: [item_id], references: [id])
+
+  // Indexes
+  @@index([item_id])
+  @@index([feature_type])
+  @@index([featured_date])
+  @@index([is_active])
+  @@map("featured_items")
+}
+
+model Report {
+  id            String      @id @default(uuid())
+  report_type   ReportType
+  reason        String
+  description   String?
+  status        ReportStatus @default(PENDING)
+  admin_notes   String?
+  created_at    DateTime    @default(now())
+  updated_at    DateTime    @updatedAt
+
+  // Foreign Keys
+  reporter_id   String
+  reported_user_id String?
+  reported_workbook_id String?
+
+  // Relationships
+  reporter      User        @relation("Reporter", fields: [reporter_id], references: [id])
+  reported_user User?       @relation("ReportedUser", fields: [reported_user_id], references: [id])
+  reported_workbook Workbook? @relation("ReportedWorkbook", fields: [reported_workbook_id], references: [id])
+
+  // Indexes
+  @@index([report_type])
+  @@index([status])
+  @@index([created_at])
+  @@map("reports")
+}
+
+// ==============================================
+// AUTHENTICATION MODELS
+// ==============================================
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  expires_at DateTime
+  is_revoked Boolean  @default(false)
+  created_at DateTime @default(now())
+
+  // Foreign Keys
+  user_id   String
+
+  // Relationships
+  user      User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  // Indexes
+  @@index([user_id])
+  @@index([expires_at])
+  @@index([is_revoked])
+  @@map("refresh_tokens")
+}
+
+// ==============================================
+// ANALYTICS MODELS
+// ==============================================
+
+model WorkbookView {
+  id          String   @id @default(uuid())
+  workbook_id String
+  user_id     String?  // Null for anonymous views
+  ip_address  String?  // IPv6 compatible
+  user_agent  String?
+  referrer    String?
+  created_at  DateTime @default(now())
+
+  // Relationships
+  workbook    Workbook @relation(fields: [workbook_id], references: [id], onDelete: Cascade)
+
+  // Indexes
+  @@index([workbook_id])
+  @@index([user_id])
+  @@index([created_at])
+  @@map("workbook_views")
+}
+
+// ==============================================
+// ENUMS
+// ==============================================
+
+enum ItemType {
+  workbook
+  user
+}
+
+enum FeatureType {
+  viz_of_the_day
+  featured_author
+  highlight
+  trending
+}
+
+enum ReportType {
+  SPAM
+  INAPPROPRIATE_CONTENT
+  HARASSMENT
+  COPYRIGHT_VIOLATION
+  FAKE_ACCOUNT
+  OTHER
+}
+
+enum ReportStatus {
+  PENDING
+  IN_REVIEW
+  RESOLVED
+  DISMISSED
+}

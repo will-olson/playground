@@ -1,0 +1,57 @@
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { ThrottlerModule } from '@nestjs/throttler';
+import { CacheModule } from '@nestjs/cache-manager';
+import { redisStore } from 'cache-manager-redis-store';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { PrismaModule } from './prisma/prisma.module';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
+import { WorkbooksModule } from './workbooks/workbooks.module';
+import { TagsModule } from './tags/tags.module';
+import { AdminModule } from './admin/admin.module';
+import { ReportsModule } from './reports/reports.module';
+import { AnalyticsModule } from './analytics/analytics.module';
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: ['.env.local', '.env'],
+    }),
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000, // 1 minute
+        limit: 100, // 100 requests per minute
+      },
+    ]),
+    CacheModule.registerAsync({
+      isGlobal: true,
+      useFactory: async () => {
+        const store = await redisStore({
+          socket: {
+            host: process.env.REDIS_HOST || 'localhost',
+            port: parseInt(process.env.REDIS_PORT || '6379'),
+          },
+          password: process.env.REDIS_PASSWORD,
+        });
+        return {
+          store,
+          ttl: 300, // 5 minutes default TTL
+        };
+      },
+    }),
+    PrismaModule,
+    AuthModule,
+    UsersModule,
+    WorkbooksModule,
+    TagsModule,
+    AdminModule,
+    ReportsModule,
+    AnalyticsModule,
+  ],
+  controllers: [AppController],
+  providers: [AppService],
+})
+export class AppModule {}
