@@ -8,8 +8,8 @@ A community hub and public portfolio platform for the Sigma ecosystem. Sigma Pla
 
 - Node.js 18+ 
 - npm 9+
-- PostgreSQL 13+
-- Redis 6+
+- SQLite (development) / PostgreSQL 13+ (production)
+- Redis 6+ (optional for development)
 
 ### Installation
 
@@ -21,24 +21,37 @@ A community hub and public portfolio platform for the Sigma ecosystem. Sigma Pla
 
 2. **Install dependencies**
    ```bash
-   npm install
+   # Install backend dependencies
+   cd backend && npm install
+   
+   # Install frontend dependencies
+   cd ../frontend && npm install
    ```
 
 3. **Set up environment variables**
    ```bash
-   cp env.example .env
-   # Edit .env with your configuration
+   # Backend environment
+   cp env.example backend/.env
+   # Edit backend/.env with your configuration
+   
+   # Frontend environment (optional)
+   # Create frontend/.env.local if needed
    ```
 
 4. **Set up the database**
    ```bash
+   cd backend
    npm run db:migrate
    npm run db:seed
    ```
 
 5. **Start development servers**
    ```bash
-   npm run dev
+   # Terminal 1 - Backend
+   cd backend && npm run start:dev
+   
+   # Terminal 2 - Frontend  
+   cd frontend && npm run dev
    ```
 
 This will start:
@@ -61,60 +74,169 @@ sigma-playground/
 
 ### Available Scripts
 
-- `npm run dev` - Start both backend and frontend in development mode
-- `npm run dev:backend` - Start only the backend server
-- `npm run dev:frontend` - Start only the frontend server
-- `npm run build` - Build both backend and frontend for production
-- `npm run test` - Run all tests
-- `npm run lint` - Lint all code
-- `npm run format` - Format code with Prettier
+**Backend (from `backend/` directory):**
+- `npm run start:dev` - Start NestJS server in development mode
+- `npm run build` - Build backend for production
+- `npm run start:prod` - Start production server
 - `npm run db:generate` - Generate Prisma client
 - `npm run db:migrate` - Run database migrations
 - `npm run db:seed` - Seed database with sample data
 - `npm run db:studio` - Open Prisma Studio
+- `npm run db:reset` - Reset database (⚠️ destructive)
+
+**Frontend (from `frontend/` directory):**
+- `npm run dev` - Start Next.js development server
+- `npm run build` - Build frontend for production
+- `npm run start` - Start production server
+- `npm run lint` - Lint code
 
 ### Technology Stack
 
 **Backend:**
 - NestJS (Node.js framework)
 - TypeScript
-- PostgreSQL (database)
+- SQLite (development) / PostgreSQL (production)
 - Prisma (ORM)
 - JWT (authentication)
-- Redis (caching)
+- Redis (caching, optional for development)
+- Sigma Embedding API integration
 
 **Frontend:**
 - React 18
-- Next.js 14
+- Next.js 15 (App Router)
 - TypeScript
 - Tailwind CSS
 - React Query (data fetching)
 - Zustand (state management)
+- Radix UI (component primitives)
 
 ## 🎯 Features
 
-### Core Features
-- **User Authentication** - Secure registration and login
-- **Workbook Publishing** - Share Sigma visualizations
-- **Public Discovery** - Browse and search workbooks
-- **User Profiles** - Showcase your work and bio
-- **Social Features** - Follow users and favorite workbooks
+### ✅ Implemented Features
+- **User Authentication** - JWT-based registration and login system
+- **Workbook Management** - CRUD operations for Sigma workbooks
+- **Public Discovery** - Browse and search workbooks with filtering
+- **User Profiles** - User management and profile system
+- **Sigma Embedding** - Secure JWT-based Sigma workbook embedding
+- **Test Interface** - Comprehensive testing page for embed functionality
+- **Admin Dashboard** - Content moderation and analytics
+- **Database Schema** - Complete Prisma schema with migrations
+- **API Documentation** - Swagger/OpenAPI documentation
 
-### Admin Features
+### 🚧 In Development
+- **Real Sigma Integration** - Requires Sigma credentials for full functionality
+- **Social Features** - Follow users and favorite workbooks
 - **Content Curation** - Feature workbooks and authors
-- **Moderation Tools** - Manage content and users
-- **Analytics Dashboard** - Platform insights and metrics
 
 ## 🔧 Configuration
 
 ### Environment Variables
 
-See `env.example` for all available configuration options.
+**Backend Configuration (`backend/.env`):**
+```bash
+# Database
+DATABASE_URL="file:./dev.db"  # SQLite for development
+DIRECT_URL="file:./dev.db"
+
+# JWT
+JWT_SECRET="your-jwt-secret"
+JWT_EXPIRES_IN="7d"
+
+# Sigma Integration (REQUIRED for full functionality)
+SIGMA_CLIENT_ID="your-sigma-client-id"
+SIGMA_CLIENT_SECRET="your-sigma-client-secret"
+SIGMA_ORG_SLUG="your-org-slug"
+SIGMA_BASE_URL="https://app.sigmacomputing.com"
+
+# Redis (optional for development)
+REDIS_URL="redis://localhost:6379"
+```
+
+**Frontend Configuration (`frontend/.env.local`):**
+```bash
+NEXT_PUBLIC_API_URL="http://localhost:3001/api/v1"
+NEXT_PUBLIC_SIGMA_BASE_URL="https://app.sigmacomputing.com"
+```
 
 ### Database Setup
 
-1. Create a PostgreSQL database
-2. Update `DATABASE_URL` in your `.env` file
-3. Run migrations: `npm run db:migrate`
-4. Seed with sample data: `npm run db:seed`
+1. **Development (SQLite):**
+   ```bash
+   cd backend
+   npm run db:migrate
+   npm run db:seed
+   ```
+
+2. **Production (PostgreSQL):**
+   - Create a PostgreSQL database
+   - Update `DATABASE_URL` in your `.env` file
+   - Run migrations: `npm run db:migrate`
+   - Seed with sample data: `npm run db:seed`
+
+## 🧪 Testing
+
+### Current Testing Status
+
+**✅ Working:**
+- All UI components and pages load correctly
+- Backend API endpoints respond properly
+- Database operations (CRUD) function correctly
+- JWT generation and validation
+- Embed URL construction
+- Configuration testing interface
+
+**❌ Requires Sigma Credentials:**
+- Real Sigma workbook embedding
+- Actual authentication with Sigma
+- Permission validation
+- Cross-domain iframe communication
+
+### Testing Commands
+
+**Backend API Testing:**
+```bash
+# Test Sigma health endpoint
+curl -X GET http://localhost:3001/api/v1/sigma/health
+
+# Test embed generation
+curl -X POST http://localhost:3001/api/v1/sigma/embed \
+  -H "Content-Type: application/json" \
+  -d '{
+    "workbookPath": "workbook/test/abc123",
+    "userEmail": "test@example.com",
+    "options": {"theme": "dark"}
+  }'
+```
+
+**Frontend Testing:**
+```bash
+# Test pages
+curl -X GET http://localhost:3000/          # Home
+curl -X GET http://localhost:3000/workbooks # Workbooks
+curl -X GET http://localhost:3000/create    # Create
+curl -X GET http://localhost:3000/test-embed # Test Embed
+```
+
+## 🚀 Next Steps
+
+### To Enable Full Functionality:
+
+1. **Get Sigma Credentials** from your Sigma admin:
+   - Client ID and Secret for embed authentication
+   - Organization slug
+   - Base URL for your Sigma instance
+
+2. **Update Environment Variables:**
+   - Add credentials to `backend/.env`
+   - Restart backend server
+
+3. **Test Real Integration:**
+   - Use actual Sigma workbook paths
+   - Test different user roles and permissions
+   - Validate embed functionality end-to-end
+
+4. **Deploy to Production:**
+   - Set up PostgreSQL database
+   - Configure production environment variables
+   - Deploy backend and frontend
 
