@@ -3,7 +3,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../node_modules/.prisma/client"
 }
 
 datasource db {
@@ -74,7 +73,6 @@ model Workbook {
   author              User        @relation(fields: [author_id], references: [id], onDelete: Cascade)
   tags                WorkbookTag[]
   favorited_by        Favorite[]
-  features            FeaturedItem[] @relation(name: "FeaturedWorkbook")
   reports             Report[]    @relation("ReportedWorkbook")
   views               WorkbookView[]
 
@@ -176,7 +174,6 @@ model FeaturedItem {
 
   // Relationships
   curated_by          User     @relation(fields: [curated_by_admin_id], references: [id])
-  workbook            Workbook? @relation(name: "FeaturedWorkbook", fields: [item_id], references: [id])
 
   // Indexes
   @@index([item_id])

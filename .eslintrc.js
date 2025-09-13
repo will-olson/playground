@@ -47,3 +47,4 @@ module.exports = {
     '*.config.ts',
   ],
 };
+

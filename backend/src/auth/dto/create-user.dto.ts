@@ -45,3 +45,4 @@ export class CreateUserDto {
   @MaxLength(100)
   full_name?: string;
 }
+

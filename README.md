@@ -117,3 +117,4 @@ See `env.example` for all available configuration options.
 2. Update `DATABASE_URL` in your `.env` file
 3. Run migrations: `npm run db:migrate`
 4. Seed with sample data: `npm run db:seed`
+

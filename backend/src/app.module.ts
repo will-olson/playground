@@ -13,6 +13,7 @@ import { TagsModule } from './tags/tags.module';
 import { AdminModule } from './admin/admin.module';
 import { ReportsModule } from './reports/reports.module';
 import { AnalyticsModule } from './analytics/analytics.module';
+import { SigmaModule } from './sigma/sigma.module';
 
 @Module({
   imports: [
@@ -29,17 +30,31 @@ import { AnalyticsModule } from './analytics/analytics.module';
     CacheModule.registerAsync({
       isGlobal: true,
       useFactory: async () => {
-        const store = await redisStore({
-          socket: {
-            host: process.env.REDIS_HOST || 'localhost',
-            port: parseInt(process.env.REDIS_PORT || '6379'),
-          },
-          password: process.env.REDIS_PASSWORD,
-        });
-        return {
-          store,
-          ttl: 300, // 5 minutes default TTL
-        };
+        // Use in-memory cache for development if Redis is not available
+        if (process.env.NODE_ENV === 'development' && !process.env.REDIS_HOST) {
+          return {
+            ttl: 300, // 5 minutes default TTL
+          };
+        }
+        
+        try {
+          const store = await redisStore({
+            socket: {
+              host: process.env.REDIS_HOST || 'localhost',
+              port: parseInt(process.env.REDIS_PORT || '6379'),
+            },
+            password: process.env.REDIS_PASSWORD,
+          });
+          return {
+            store,
+            ttl: 300, // 5 minutes default TTL
+          };
+        } catch (error) {
+          console.warn('Redis not available, using in-memory cache:', error.message);
+          return {
+            ttl: 300, // 5 minutes default TTL
+          };
+        }
       },
     }),
     PrismaModule,
@@ -50,6 +65,7 @@ import { AnalyticsModule } from './analytics/analytics.module';
     AdminModule,
     ReportsModule,
     AnalyticsModule,
+    SigmaModule,
   ],
   controllers: [AppController],
   providers: [AppService],

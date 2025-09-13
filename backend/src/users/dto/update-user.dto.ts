@@ -80,3 +80,4 @@ export class UpdateUserDto {
   @MaxLength(500)
   profile_image_url?: string;
 }
+

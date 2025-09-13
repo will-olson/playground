@@ -253,6 +253,16 @@ async function main() {
   const featuredWorkbook = workbooks[0];
   const featuredUser = users[0];
 
+  // Ensure we have users and workbooks
+  if (users.length === 0) {
+    console.log('❌ No users found, skipping featured items');
+    return;
+  }
+  if (workbooks.length === 0) {
+    console.log('❌ No workbooks found, skipping featured items');
+    return;
+  }
+
   // Viz of the day
   const vizOfTheDay = await prisma.featuredItem.create({
     data: {

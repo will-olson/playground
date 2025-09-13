@@ -14,3 +14,4 @@ export class TagsController {
     return this.tagsService.findAll();
   }
 }
+
