@@ -1,4 +1,4 @@
-import { Controller, Get, Put, Post, Delete, Param, Body, Query, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Put, Post, Delete, Param, Body, Query, UseGuards, Request, NotFoundException } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam, ApiQuery } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -15,11 +15,38 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'User profile retrieved successfully' })
   @ApiResponse({ status: 404, description: 'User not found' })
   async getUserProfile(@Param('id') userId: string) {
-    const user = await this.usersService.findById(userId);
-    if (!user) {
-      throw new Error('User not found');
+    try {
+      console.log('Fetching user with ID:', userId);
+      
+      // Simple test first
+      if (userId === 'test') {
+        return { id: 'test', name: 'Test User', message: 'API is working' };
+      }
+      
+      // Try simple user fetch first
+      const user = await this.usersService.findById(userId);
+      console.log('User found:', user ? 'Yes' : 'No');
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+      
+      // Return simplified user data for now
+      return {
+        id: user.id,
+        email: user.email,
+        full_name: user.full_name,
+        bio: user.bio,
+        title: user.title,
+        organization: user.organization,
+        location: user.location,
+        profile_image_url: user.profile_image_url,
+        created_at: user.created_at,
+        updated_at: user.updated_at,
+      };
+    } catch (error) {
+      console.error('Error in getUserProfile:', error);
+      throw error;
     }
-    return user;
   }
 
   @Get(':id/stats')

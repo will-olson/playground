@@ -7,23 +7,21 @@ export class UsersService {
   constructor(private prisma: PrismaService) {}
 
   async findById(id: string): Promise<any | null> {
-    return this.prisma.user.findUnique({
-      where: { id },
-      include: {
-        workbooks: {
-          where: { is_publicly_visible: true },
-          orderBy: { published_at: 'desc' },
-          take: 10,
-        },
-        _count: {
-          select: {
-            workbooks: true,
-            followers: true,
-            following: true,
+    try {
+      return await this.prisma.user.findUnique({
+        where: { id },
+        include: {
+          workbooks: {
+            where: { is_publicly_visible: true },
+            orderBy: { published_at: 'desc' },
+            take: 10,
           },
         },
-      },
-    });
+      });
+    } catch (error) {
+      console.error('Error in findById:', error);
+      throw error;
+    }
   }
 
   async findByUsername(username: string): Promise<any | null> {
@@ -237,20 +235,22 @@ export class UsersService {
           author: {
             select: {
               id: true,
-              first_name: true,
-              last_name: true,
+              full_name: true,
               profile_image_url: true,
             },
           },
           tags: {
-            select: {
-              id: true,
-              name: true,
+            include: {
+              tag: {
+                select: {
+                  name: true,
+                },
+              },
             },
           },
           _count: {
             select: {
-              favorites: true,
+                  favorited_by: true,
               views: true,
             },
           },
@@ -282,20 +282,22 @@ export class UsersService {
               author: {
                 select: {
                   id: true,
-                  first_name: true,
-                  last_name: true,
+                  full_name: true,
                   profile_image_url: true,
                 },
               },
               tags: {
-                select: {
-                  id: true,
-                  name: true,
+                include: {
+                  tag: {
+                    select: {
+                      name: true,
+                    },
+                  },
                 },
               },
               _count: {
                 select: {
-                  favorites: true,
+                  favorited_by: true,
                   views: true,
                 },
               },
@@ -339,20 +341,22 @@ export class UsersService {
           author: {
             select: {
               id: true,
-              first_name: true,
-              last_name: true,
+              full_name: true,
               profile_image_url: true,
             },
           },
           tags: {
-            select: {
-              id: true,
-              name: true,
+            include: {
+              tag: {
+                select: {
+                  name: true,
+                },
+              },
             },
           },
           _count: {
             select: {
-              favorites: true,
+                  favorited_by: true,
               views: true,
             },
           },
@@ -397,20 +401,22 @@ export class UsersService {
           author: {
             select: {
               id: true,
-              first_name: true,
-              last_name: true,
+              full_name: true,
               profile_image_url: true,
             },
           },
           tags: {
-            select: {
-              id: true,
-              name: true,
+            include: {
+              tag: {
+                select: {
+                  name: true,
+                },
+              },
             },
           },
           _count: {
             select: {
-              favorites: true,
+                  favorited_by: true,
               views: true,
             },
           },
@@ -443,20 +449,22 @@ export class UsersService {
           author: {
             select: {
               id: true,
-              first_name: true,
-              last_name: true,
+              full_name: true,
               profile_image_url: true,
             },
           },
           tags: {
-            select: {
-              id: true,
-              name: true,
+            include: {
+              tag: {
+                select: {
+                  name: true,
+                },
+              },
             },
           },
           _count: {
             select: {
-              favorites: true,
+                  favorited_by: true,
               views: true,
             },
           },
