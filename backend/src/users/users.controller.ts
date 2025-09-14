@@ -9,17 +9,104 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Get(':username')
-  @ApiOperation({ summary: 'Get user profile by username' })
-  @ApiParam({ name: 'username', description: 'Username' })
+  @Get(':id')
+  @ApiOperation({ summary: 'Get user profile by ID' })
+  @ApiParam({ name: 'id', description: 'User ID' })
   @ApiResponse({ status: 200, description: 'User profile retrieved successfully' })
   @ApiResponse({ status: 404, description: 'User not found' })
-  async getUserProfile(@Param('username') username: string) {
-    const user = await this.usersService.findByUsername(username);
+  async getUserProfile(@Param('id') userId: string) {
+    const user = await this.usersService.findById(userId);
     if (!user) {
       throw new Error('User not found');
     }
     return user;
+  }
+
+  @Get(':id/stats')
+  @ApiOperation({ summary: 'Get user statistics' })
+  @ApiParam({ name: 'id', description: 'User ID' })
+  @ApiResponse({ status: 200, description: 'User stats retrieved successfully' })
+  @ApiResponse({ status: 404, description: 'User not found' })
+  async getUserStats(@Param('id') userId: string) {
+    return this.usersService.getUserStats(userId);
+  }
+
+  @Get(':id/workbooks')
+  @ApiOperation({ summary: 'Get user workbooks' })
+  @ApiParam({ name: 'id', description: 'User ID' })
+  @ApiQuery({ name: 'page', required: false, description: 'Page number' })
+  @ApiQuery({ name: 'limit', required: false, description: 'Items per page' })
+  @ApiResponse({ status: 200, description: 'User workbooks retrieved successfully' })
+  async getUserWorkbooks(
+    @Param('id') userId: string,
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+  ) {
+    return this.usersService.getUserWorkbooks(userId, page, limit);
+  }
+
+  @Get(':id/favorites')
+  @ApiOperation({ summary: 'Get user favorite workbooks' })
+  @ApiParam({ name: 'id', description: 'User ID' })
+  @ApiQuery({ name: 'page', required: false, description: 'Page number' })
+  @ApiQuery({ name: 'limit', required: false, description: 'Items per page' })
+  @ApiResponse({ status: 200, description: 'User favorites retrieved successfully' })
+  async getUserFavorites(
+    @Param('id') userId: string,
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+  ) {
+    return this.usersService.getUserFavorites(userId, page, limit);
+  }
+
+  @Get(':id/following/workbooks')
+  @ApiOperation({ summary: 'Get workbooks from users this user follows' })
+  @ApiParam({ name: 'id', description: 'User ID' })
+  @ApiQuery({ name: 'page', required: false, description: 'Page number' })
+  @ApiQuery({ name: 'limit', required: false, description: 'Items per page' })
+  @ApiResponse({ status: 200, description: 'Following workbooks retrieved successfully' })
+  async getFollowingWorkbooks(
+    @Param('id') userId: string,
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+  ) {
+    return this.usersService.getFollowingWorkbooks(userId, page, limit);
+  }
+
+  @Get(':id/followers/workbooks')
+  @ApiOperation({ summary: 'Get workbooks from users who follow this user' })
+  @ApiParam({ name: 'id', description: 'User ID' })
+  @ApiQuery({ name: 'page', required: false, description: 'Page number' })
+  @ApiQuery({ name: 'limit', required: false, description: 'Items per page' })
+  @ApiResponse({ status: 200, description: 'Followers workbooks retrieved successfully' })
+  async getFollowersWorkbooks(
+    @Param('id') userId: string,
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+  ) {
+    return this.usersService.getFollowersWorkbooks(userId, page, limit);
+  }
+
+  @Get(':id/hidden')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get user hidden workbooks' })
+  @ApiParam({ name: 'id', description: 'User ID' })
+  @ApiQuery({ name: 'page', required: false, description: 'Page number' })
+  @ApiQuery({ name: 'limit', required: false, description: 'Items per page' })
+  @ApiResponse({ status: 200, description: 'Hidden workbooks retrieved successfully' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden - can only view own hidden workbooks' })
+  async getHiddenWorkbooks(
+    @Request() req: any,
+    @Param('id') userId: string,
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+  ) {
+    if (req.user.id !== userId) {
+      throw new Error('Forbidden - can only view own hidden workbooks');
+    }
+    return this.usersService.getHiddenWorkbooks(userId, page, limit);
   }
 
   @Put('profile')

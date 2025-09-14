@@ -189,4 +189,290 @@ export class UsersService {
       },
     };
   }
+
+  async getUserStats(userId: string) {
+    const [workbooksCount, favoritesCount, followingCount, followersCount, hiddenCount] = await Promise.all([
+      this.prisma.workbook.count({
+        where: { 
+          author_id: userId,
+          is_publicly_visible: true 
+        },
+      }),
+      this.prisma.favorite.count({
+        where: { user_id: userId },
+      }),
+      this.prisma.follow.count({
+        where: { follower_id: userId },
+      }),
+      this.prisma.follow.count({
+        where: { following_id: userId },
+      }),
+      this.prisma.workbook.count({
+        where: { 
+          author_id: userId,
+          is_publicly_visible: false 
+        },
+      }),
+    ]);
+
+    return {
+      workbooksCount,
+      favoritesCount,
+      followingCount,
+      followersCount,
+      hiddenCount,
+    };
+  }
+
+  async getUserWorkbooks(userId: string, page: number = 1, limit: number = 20) {
+    const skip = (page - 1) * limit;
+
+    const [workbooks, total] = await Promise.all([
+      this.prisma.workbook.findMany({
+        where: { 
+          author_id: userId,
+          is_publicly_visible: true 
+        },
+        include: {
+          author: {
+            select: {
+              id: true,
+              first_name: true,
+              last_name: true,
+              profile_image_url: true,
+            },
+          },
+          tags: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          _count: {
+            select: {
+              favorites: true,
+              views: true,
+            },
+          },
+        },
+        skip,
+        take: limit,
+        orderBy: { updated_at: 'desc' },
+      }),
+      this.prisma.workbook.count({
+        where: { 
+          author_id: userId,
+          is_publicly_visible: true 
+        },
+      }),
+    ]);
+
+    return workbooks;
+  }
+
+  async getUserFavorites(userId: string, page: number = 1, limit: number = 20) {
+    const skip = (page - 1) * limit;
+
+    const [favorites, total] = await Promise.all([
+      this.prisma.favorite.findMany({
+        where: { user_id: userId },
+        include: {
+          workbook: {
+            include: {
+              author: {
+                select: {
+                  id: true,
+                  first_name: true,
+                  last_name: true,
+                  profile_image_url: true,
+                },
+              },
+              tags: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+              _count: {
+                select: {
+                  favorites: true,
+                  views: true,
+                },
+              },
+            },
+          },
+        },
+        skip,
+        take: limit,
+        orderBy: { created_at: 'desc' },
+      }),
+      this.prisma.favorite.count({
+        where: { user_id: userId },
+      }),
+    ]);
+
+    return favorites.map(f => f.workbook);
+  }
+
+  async getFollowingWorkbooks(userId: string, page: number = 1, limit: number = 20) {
+    const skip = (page - 1) * limit;
+
+    // Get users that this user follows
+    const followingUsers = await this.prisma.follow.findMany({
+      where: { follower_id: userId },
+      select: { following_id: true },
+    });
+
+    const followingUserIds = followingUsers.map(f => f.following_id);
+
+    if (followingUserIds.length === 0) {
+      return [];
+    }
+
+    const [workbooks, total] = await Promise.all([
+      this.prisma.workbook.findMany({
+        where: { 
+          author_id: { in: followingUserIds },
+          is_publicly_visible: true 
+        },
+        include: {
+          author: {
+            select: {
+              id: true,
+              first_name: true,
+              last_name: true,
+              profile_image_url: true,
+            },
+          },
+          tags: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          _count: {
+            select: {
+              favorites: true,
+              views: true,
+            },
+          },
+        },
+        skip,
+        take: limit,
+        orderBy: { updated_at: 'desc' },
+      }),
+      this.prisma.workbook.count({
+        where: { 
+          author_id: { in: followingUserIds },
+          is_publicly_visible: true 
+        },
+      }),
+    ]);
+
+    return workbooks;
+  }
+
+  async getFollowersWorkbooks(userId: string, page: number = 1, limit: number = 20) {
+    const skip = (page - 1) * limit;
+
+    // Get users who follow this user
+    const followers = await this.prisma.follow.findMany({
+      where: { following_id: userId },
+      select: { follower_id: true },
+    });
+
+    const followerIds = followers.map(f => f.follower_id);
+
+    if (followerIds.length === 0) {
+      return [];
+    }
+
+    const [workbooks, total] = await Promise.all([
+      this.prisma.workbook.findMany({
+        where: { 
+          author_id: { in: followerIds },
+          is_publicly_visible: true 
+        },
+        include: {
+          author: {
+            select: {
+              id: true,
+              first_name: true,
+              last_name: true,
+              profile_image_url: true,
+            },
+          },
+          tags: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          _count: {
+            select: {
+              favorites: true,
+              views: true,
+            },
+          },
+        },
+        skip,
+        take: limit,
+        orderBy: { updated_at: 'desc' },
+      }),
+      this.prisma.workbook.count({
+        where: { 
+          author_id: { in: followerIds },
+          is_publicly_visible: true 
+        },
+      }),
+    ]);
+
+    return workbooks;
+  }
+
+  async getHiddenWorkbooks(userId: string, page: number = 1, limit: number = 20) {
+    const skip = (page - 1) * limit;
+
+    const [workbooks, total] = await Promise.all([
+      this.prisma.workbook.findMany({
+        where: { 
+          author_id: userId,
+          is_publicly_visible: false 
+        },
+        include: {
+          author: {
+            select: {
+              id: true,
+              first_name: true,
+              last_name: true,
+              profile_image_url: true,
+            },
+          },
+          tags: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          _count: {
+            select: {
+              favorites: true,
+              views: true,
+            },
+          },
+        },
+        skip,
+        take: limit,
+        orderBy: { updated_at: 'desc' },
+      }),
+      this.prisma.workbook.count({
+        where: { 
+          author_id: userId,
+          is_publicly_visible: false 
+        },
+      }),
+    ]);
+
+    return workbooks;
+  }
 }
