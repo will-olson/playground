@@ -41,5 +41,27 @@ export class WorkbooksController {
     return { message: 'Workbook removed from favorites' };
   }
 
+  @Get('favorites')
+  @ApiOperation({ summary: 'Get user favorites (test mode - no auth required)' })
+  @ApiResponse({ status: 200, description: 'User favorites retrieved successfully' })
+  async getUserFavorites() {
+    // Use the first test user for testing - hardcoded for simplicity
+    const userId = 'edd83f3d-77ee-4eac-8be2-84b7e6b16bda'; // John Doe's ID
+    
+    return this.workbooksService.getUserFavorites(userId);
+  }
+
+  @Get(':id/favorite-status')
+  @ApiOperation({ summary: 'Check if workbook is favorited by user (test mode - no auth required)' })
+  @ApiParam({ name: 'id', description: 'Workbook ID' })
+  @ApiResponse({ status: 200, description: 'Favorite status retrieved successfully' })
+  async getFavoriteStatus(@Param('id') workbookId: string) {
+    // Use the first test user for testing - hardcoded for simplicity
+    const userId = 'edd83f3d-77ee-4eac-8be2-84b7e6b16bda'; // John Doe's ID
+    
+    const isFavorited = await this.workbooksService.isFavorited(userId, workbookId);
+    return { isFavorited };
+  }
+
 }
 

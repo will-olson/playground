@@ -49,7 +49,8 @@ export class WorkbooksService {
     });
 
     if (existingFavorite) {
-      throw new ForbiddenException('Workbook already in favorites');
+      // Return success if already favorited (idempotent operation)
+      return;
     }
 
     await this.prisma.favorite.create({
@@ -71,7 +72,8 @@ export class WorkbooksService {
     });
 
     if (!favorite) {
-      throw new NotFoundException('Favorite not found');
+      // Return success if not favorited (idempotent operation)
+      return;
     }
 
     await this.prisma.favorite.delete({
@@ -82,6 +84,45 @@ export class WorkbooksService {
         },
       },
     });
+  }
+
+  async getUserFavorites(userId: string) {
+    return this.prisma.favorite.findMany({
+      where: { user_id: userId },
+      include: {
+        workbook: {
+          include: {
+            author: {
+              select: {
+                id: true,
+                username: true,
+                full_name: true,
+                profile_image_url: true,
+              },
+            },
+            tags: {
+              include: {
+                tag: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: { created_at: 'desc' },
+    });
+  }
+
+  async isFavorited(userId: string, workbookId: string): Promise<boolean> {
+    const favorite = await this.prisma.favorite.findUnique({
+      where: {
+        user_id_workbook_id: {
+          user_id: userId,
+          workbook_id: workbookId,
+        },
+      },
+    });
+
+    return !!favorite;
   }
 }
 
