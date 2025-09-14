@@ -57,6 +57,13 @@ A community hub and public portfolio platform for the Sigma ecosystem. Sigma Pla
 This will start:
 - Backend API server on http://localhost:3001
 - Frontend development server on http://localhost:3000
+- Prisma Studio on http://localhost:5556 (run `cd backend && npx prisma studio --port 5556`)
+
+### Quick Access URLs
+- **Application**: http://localhost:3000
+- **API Documentation**: http://localhost:3001/api/docs
+- **Database Studio**: http://localhost:5556
+- **Profile Testing**: http://localhost:3000/profile-test
 
 ## 📁 Project Structure
 
@@ -172,6 +179,47 @@ NEXT_PUBLIC_SIGMA_BASE_URL="https://app.sigmacomputing.com"
    - Update `DATABASE_URL` in your `.env` file
    - Run migrations: `npm run db:migrate`
    - Seed with sample data: `npm run db:seed`
+
+## 🛠️ Development Tools
+
+### Built-in Development Experience
+
+The application includes powerful built-in development tools for enhanced debugging and testing:
+
+#### Prisma Studio - Database Management
+- **URL**: http://localhost:5556/
+- **Purpose**: Visual database management and data exploration
+- **Features**:
+  - Browse and edit data through intuitive web interface
+  - View relationships between Users, Workbooks, Tags, Favorites
+  - Real-time data validation and integrity checking
+  - Quick data modifications without SQL knowledge
+  - Test data creation for profile testing
+
+#### Next.js Development Tools
+- **Next.js DevTools**: Bottom-left circular "N" icon
+  - Route information (Static/SSR/SSG)
+  - Turbopack bundler status
+  - Performance metrics and compilation stats
+- **React Query DevTools**: TanStack Query panel
+  - Query status monitoring (Fresh/Fetching/Stale/Inactive)
+  - API call tracking and performance insights
+  - Cache behavior visualization
+  - Error debugging and query management
+
+#### Development Environment Stack
+- **Frontend**: http://localhost:3000 (Next.js with dev tools)
+- **Backend API**: http://localhost:3001 (NestJS with logging)
+- **Database Studio**: http://localhost:5556 (Prisma Studio)
+
+#### Profile Testing Workflow
+1. Navigate to http://localhost:3000/profile-test
+2. Click on profiles - watch React Query DevTools show new queries
+3. Monitor API calls and caching behavior in real-time
+4. Cross-reference data in Prisma Studio with frontend display
+5. Debug loading states and performance issues
+
+For detailed information, see [Development Tools & Database Management Guide](documentation/Development%20Tools%20&%20Database%20Management%20Guide.md).
 
 ## 🧪 Testing
 
