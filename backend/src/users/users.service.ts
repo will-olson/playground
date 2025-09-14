@@ -50,6 +50,21 @@ export class UsersService {
     });
   }
 
+  async findTestUsers(): Promise<any[]> {
+    return this.prisma.user.findMany({
+      where: {
+        email: {
+          in: ['john@example.com', 'jane@example.com', 'mike@example.com']
+        }
+      },
+      select: {
+        id: true,
+        full_name: true,
+        email: true
+      }
+    });
+  }
+
   async followUser(followerId: string, followingId: string): Promise<void> {
     if (followerId === followingId) {
       throw new ForbiddenException('Cannot follow yourself');

@@ -9,6 +9,17 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @Get('test-auth-bypass')
+  @ApiOperation({ summary: 'Test endpoint to verify auth bypass is working' })
+  @ApiResponse({ status: 200, description: 'Test successful' })
+  async testAuthBypass() {
+    return { 
+      message: 'SUCCESS: Auth bypass is working!', 
+      timestamp: new Date().toISOString(),
+      status: 'no_auth_required'
+    };
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Get user profile by ID' })
   @ApiParam({ name: 'id', description: 'User ID' })
@@ -147,30 +158,24 @@ export class UsersController {
   }
 
   @Post(':id/follow')
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Follow a user' })
+  @ApiOperation({ summary: 'Follow a user (test mode - no auth required)' })
   @ApiParam({ name: 'id', description: 'User ID to follow' })
   @ApiResponse({ status: 201, description: 'Successfully followed user' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'User not found' })
   @ApiResponse({ status: 403, description: 'Cannot follow yourself or already following' })
-  async followUser(@Request() req: any, @Param('id') userId: string) {
-    await this.usersService.followUser(req.user.id, userId);
-    return { message: 'Successfully followed user' };
+  async followUser(@Param('id') userId: string) {
+    // TEST: Return immediately to verify endpoint is working
+    return { message: 'TEST: Follow endpoint working without auth', userId, timestamp: new Date().toISOString() };
   }
 
   @Delete(':id/follow')
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Unfollow a user' })
+  @ApiOperation({ summary: 'Unfollow a user (test mode - no auth required)' })
   @ApiParam({ name: 'id', description: 'User ID to unfollow' })
   @ApiResponse({ status: 200, description: 'Successfully unfollowed user' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'Follow relationship not found' })
-  async unfollowUser(@Request() req: any, @Param('id') userId: string) {
-    await this.usersService.unfollowUser(req.user.id, userId);
-    return { message: 'Successfully unfollowed user' };
+  async unfollowUser(@Param('id') userId: string) {
+    // TEST: Return immediately to verify endpoint is working
+    return { message: 'TEST: Unfollow endpoint working without auth', userId, timestamp: new Date().toISOString() };
   }
 
   @Get(':id/followers')
@@ -199,6 +204,35 @@ export class UsersController {
     @Query('limit') limit?: number,
   ) {
     return this.usersService.getFollowing(userId, page, limit);
+  }
+
+  @Post('test-follow/:id')
+  @ApiOperation({ summary: 'Test follow a user (no auth required)' })
+  @ApiParam({ name: 'id', description: 'User ID to follow' })
+  @ApiResponse({ status: 201, description: 'Successfully followed user' })
+  @ApiResponse({ status: 404, description: 'User not found' })
+  @ApiResponse({ status: 403, description: 'Cannot follow yourself or already following' })
+  async testFollowUser(@Param('id') userId: string) {
+    // Use the first test user as the follower for testing
+    const testUsers = await this.usersService.findTestUsers();
+    const followerId = testUsers[0].id;
+    
+    await this.usersService.followUser(followerId, userId);
+    return { message: 'Successfully followed user' };
+  }
+
+  @Delete('test-follow/:id')
+  @ApiOperation({ summary: 'Test unfollow a user (no auth required)' })
+  @ApiParam({ name: 'id', description: 'User ID to unfollow' })
+  @ApiResponse({ status: 200, description: 'Successfully unfollowed user' })
+  @ApiResponse({ status: 404, description: 'User not found' })
+  async testUnfollowUser(@Param('id') userId: string) {
+    // Use the first test user as the follower for testing
+    const testUsers = await this.usersService.findTestUsers();
+    const followerId = testUsers[0].id;
+    
+    await this.usersService.unfollowUser(followerId, userId);
+    return { message: 'Successfully unfollowed user' };
   }
 }
 

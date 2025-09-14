@@ -14,6 +14,8 @@ import { AdminModule } from './admin/admin.module';
 import { ReportsModule } from './reports/reports.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { SigmaModule } from './sigma/sigma.module';
+import { UsersService } from './users/users.service';
+import { WorkbooksService } from './workbooks/workbooks.service';
 
 @Module({
   imports: [
@@ -68,6 +70,6 @@ import { SigmaModule } from './sigma/sigma.module';
     SigmaModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, UsersService, WorkbooksService],
 })
 export class AppModule {}
