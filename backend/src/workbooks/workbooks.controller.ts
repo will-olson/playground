@@ -22,7 +22,7 @@ export class WorkbooksController {
   @ApiResponse({ status: 404, description: 'Workbook not found' })
   async addToFavorites(@Param('id') workbookId: string) {
     // Use the first test user for testing - hardcoded for simplicity
-    const userId = 'f6afdbc8-526f-4e77-aeae-096ec9210633'; // John Doe's ID
+    const userId = 'edd83f3d-77ee-4eac-8be2-84b7e6b16bda'; // John Doe's ID
     
     await this.workbooksService.addToFavorites(userId, workbookId);
     return { message: 'Workbook added to favorites' };
@@ -35,10 +35,32 @@ export class WorkbooksController {
   @ApiResponse({ status: 404, description: 'Favorite not found' })
   async removeFromFavorites(@Param('id') workbookId: string) {
     // Use the first test user for testing - hardcoded for simplicity
-    const userId = 'f6afdbc8-526f-4e77-aeae-096ec9210633'; // John Doe's ID
+    const userId = 'edd83f3d-77ee-4eac-8be2-84b7e6b16bda'; // John Doe's ID
     
     await this.workbooksService.removeFromFavorites(userId, workbookId);
     return { message: 'Workbook removed from favorites' };
+  }
+
+  @Get('favorites')
+  @ApiOperation({ summary: 'Get user favorites (test mode - no auth required)' })
+  @ApiResponse({ status: 200, description: 'User favorites retrieved successfully' })
+  async getUserFavorites() {
+    // Use the first test user for testing - hardcoded for simplicity
+    const userId = 'edd83f3d-77ee-4eac-8be2-84b7e6b16bda'; // John Doe's ID
+    
+    return this.workbooksService.getUserFavorites(userId);
+  }
+
+  @Get(':id/favorite-status')
+  @ApiOperation({ summary: 'Check if workbook is favorited by user (test mode - no auth required)' })
+  @ApiParam({ name: 'id', description: 'Workbook ID' })
+  @ApiResponse({ status: 200, description: 'Favorite status retrieved successfully' })
+  async getFavoriteStatus(@Param('id') workbookId: string) {
+    // Use the first test user for testing - hardcoded for simplicity
+    const userId = 'edd83f3d-77ee-4eac-8be2-84b7e6b16bda'; // John Doe's ID
+    
+    const isFavorited = await this.workbooksService.isFavorited(userId, workbookId);
+    return { isFavorited };
   }
 
 }
