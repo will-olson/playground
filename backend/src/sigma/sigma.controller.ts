@@ -134,8 +134,6 @@ export class SigmaController {
       }
     };
   }
-<<<<<<< Updated upstream
-=======
 
   // NEW TESTING ENDPOINTS FOR REAL INTEGRATION TESTING
 
@@ -322,6 +320,7 @@ export class SigmaController {
         embedURL = await this.embedURLService.generateElementEmbed(
           userEmail,
           workbookId,
+          pageId || 'default',
           elementId,
           { jwtOptions, urlParams }
         );
@@ -373,5 +372,4 @@ export class SigmaController {
       };
     }
   }
->>>>>>> Stashed changes
 }

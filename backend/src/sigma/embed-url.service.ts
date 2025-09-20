@@ -42,9 +42,14 @@ export class EmbedURLService {
     const embedPath = this.buildEmbedPath(workbookPath, orgSlug);
     const url = new URL(embedPath, baseUrl);
     
-    // Add JWT and embed parameters
-    url.searchParams.set(':jwt', jwt);
-    url.searchParams.set(':embed', 'true');
+    // Add JWT and embed parameters (don't URL encode the colons)
+    const jwtParam = `:jwt=${jwt}`;
+    const embedParam = `:embed=true`;
+    
+    // Manually construct the query string to avoid URL encoding the colons
+    const existingParams = url.search;
+    const separator = existingParams ? '&' : '?';
+    url.href = url.href + separator + jwtParam + '&' + embedParam;
     
     // Add optional parameters
     this.addOptionalParameters(url, options);
@@ -88,22 +93,108 @@ export class EmbedURLService {
       controlValues
     } = options;
 
-    if (hideBookmarks) url.searchParams.set('hide_bookmarks', 'true');
-    if (hideFolderNavigation) url.searchParams.set('hide_folder_navigation', 'true');
-    if (hideMenu) url.searchParams.set('hide_menu', 'true');
-    if (hideTooltip) url.searchParams.set('hide_tooltip', 'true');
-    if (language) url.searchParams.set('lng', language);
-    if (languageVariant) url.searchParams.set('lng_variant', languageVariant);
-    if (menuPosition) url.searchParams.set('menu_position', menuPosition);
-    if (responsiveHeight) url.searchParams.set('responsive_height', 'true');
-    if (theme) url.searchParams.set('theme', theme);
+    const params: string[] = [];
+    
+    if (hideBookmarks) params.push('hide_bookmarks=true');
+    if (hideFolderNavigation) params.push('hide_folder_navigation=true');
+    if (hideMenu) params.push('hide_menu=true');
+    if (hideTooltip) params.push('hide_tooltip=true');
+    if (language) params.push(`lng=${language}`);
+    if (languageVariant) params.push(`lng_variant=${languageVariant}`);
+    if (menuPosition) params.push(`menu_position=${menuPosition}`);
+    if (responsiveHeight) params.push('responsive_height=true');
+    if (theme) params.push(`theme=${theme}`);
     
     // Add control values
     if (controlValues) {
       for (const [controlId, value] of Object.entries(controlValues)) {
-        url.searchParams.set(controlId, value);
+        params.push(`${controlId}=${value}`);
       }
     }
+    
+    // Append parameters to URL
+    if (params.length > 0) {
+      const separator = url.href.includes('?') ? '&' : '?';
+      url.href = url.href + separator + params.join('&');
+    }
+  }
+
+  // Workbook embed generation
+  async generateWorkbookEmbed(
+    userEmail: string,
+    workbookId: string,
+    options: {
+      tagName?: string;
+      jwtOptions?: JWTGenerationOptions;
+      urlParams?: Record<string, string>;
+    } = {}
+  ): Promise<string> {
+    const workbookPath = `workbook/workbook/${workbookId}`;
+    const embedOptions: EmbedURLOptions = {
+      jwtOptions: options.jwtOptions,
+      ...options.urlParams
+    };
+    
+    return this.buildEmbedURL(workbookPath, userEmail, embedOptions);
+  }
+
+  // Page embed generation
+  async generatePageEmbed(
+    userEmail: string,
+    workbookId: string,
+    pageId: string,
+    options: {
+      tagName?: string;
+      jwtOptions?: JWTGenerationOptions;
+      urlParams?: Record<string, string>;
+    } = {}
+  ): Promise<string> {
+    const workbookPath = `workbook/workbook-${workbookId}/page/${pageId}`;
+    const embedOptions: EmbedURLOptions = {
+      jwtOptions: options.jwtOptions,
+      ...options.urlParams
+    };
+    
+    return this.buildEmbedURL(workbookPath, userEmail, embedOptions);
+  }
+
+  // Element embed generation
+  async generateElementEmbed(
+    userEmail: string,
+    workbookId: string,
+    pageId: string,
+    elementId: string,
+    options: {
+      tagName?: string;
+      jwtOptions?: JWTGenerationOptions;
+      urlParams?: Record<string, string>;
+    } = {}
+  ): Promise<string> {
+    const workbookPath = `workbook/workbook-${workbookId}/page/${pageId}/element/${elementId}`;
+    const embedOptions: EmbedURLOptions = {
+      jwtOptions: options.jwtOptions,
+      ...options.urlParams
+    };
+    
+    return this.buildEmbedURL(workbookPath, userEmail, embedOptions);
+  }
+
+  // Ask Sigma embed generation
+  async generateAskSigmaEmbed(
+    userEmail: string,
+    options: {
+      tagName?: string;
+      jwtOptions?: JWTGenerationOptions;
+      urlParams?: Record<string, string>;
+    } = {}
+  ): Promise<string> {
+    const workbookPath = 'ask-sigma';
+    const embedOptions: EmbedURLOptions = {
+      jwtOptions: options.jwtOptions,
+      ...options.urlParams
+    };
+    
+    return this.buildEmbedURL(workbookPath, userEmail, embedOptions);
   }
 
   validateEmbedURL(url: string): { isValid: boolean; errors: string[] } {
