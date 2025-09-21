@@ -6499,7 +6499,8 @@ export const performanceMonitor = new PerformanceMonitor();
 
 ## **🎯 Repository Coverage Summary**
 
-### **✅ Fully Covered Repositories (24/24)**
+### **✅ Fully Covered Repositories (18/18)**
+**Core External Repositories:**
 1. **sqlparser-rs** - SQL analysis and optimization
 2. **stitches** - Modern CSS-in-JS framework
 3. **gosnowflake** - High-performance Snowflake connectivity
@@ -6518,41 +6519,152 @@ export const performanceMonitor = new PerformanceMonitor();
 16. **embed-sdk** - React and Node.js embed SDKs
 17. **sigma-sample-api** - Public API examples
 18. **sigma-repos** - Core Sigma repositories
-19. **embedding_qs_series_2_api_use_cases** - Advanced API use cases
-20. **recipe-portal** - Interactive API documentation
-21. **local-bookmark-store** - Client-side bookmark management
-22. **api-embed-filters** - Advanced filtering capabilities
-23. **api-embed-copy-create-workbook** - Workbook lifecycle management
-24. **generateEmbedClientCredentials** - Security and access control
+
+**Quickstarts Subdirectories (Included in quickstarts-public):**
+- **embedding_qs_series_2_api_use_cases** - Advanced API use cases
+- **recipe-portal** - Interactive API documentation
+- **local-bookmark-store** - Client-side bookmark management
+- **api-embed-filters** - Advanced filtering capabilities
+- **api-embed-copy-create-workbook** - Workbook lifecycle management
+- **generateEmbedClientCredentials** - Security and access control
 
 ### **🔧 Implementation Priority Matrix**
 
-| Repository | Impact | Effort | Priority | Phase |
-|------------|--------|--------|----------|-------|
-| sqlparser-rs | High | Medium | 1 | Foundation |
-| stitches | High | Low | 2 | Foundation |
-| html2canvas | High | Low | 3 | Foundation |
-| babel-plugin-lodash | Medium | Low | 4 | Foundation |
-| hot-shots | Medium | Low | 5 | Foundation |
-| arrow | High | Medium | 6 | Data & Performance |
-| gosnowflake | High | Medium | 7 | Data & Performance |
-| grpc-node | High | High | 8 | Data & Performance |
-| trino-go-client | Medium | Medium | 9 | Data & Performance |
-| databricks-sql-go | Medium | Medium | 10 | Data & Performance |
-| google-cloud-go | Medium | High | 11 | Data & Performance |
-| editor | High | High | 12 | Advanced Features |
-| i18next-parser | Medium | Low | 13 | Advanced Features |
-| embed-sdk | High | Medium | 14 | Advanced Features |
-| quickstarts-public | High | Low | 15 | Advanced Features |
-| sigma-sample-api | High | Low | 16 | Advanced Features |
-| recipe-portal | Medium | Medium | 17 | Advanced Features |
-| local-bookmark-store | Medium | Low | 18 | Advanced Features |
-| api-embed-filters | Medium | Medium | 19 | Enterprise Features |
-| api-embed-copy-create-workbook | Medium | Medium | 20 | Enterprise Features |
-| generateEmbedClientCredentials | High | Medium | 21 | Enterprise Features |
-| embedding_qs_series_2_api_use_cases | High | Medium | 22 | Enterprise Features |
-| sigma-sample-plugins | Medium | Low | 23 | Enterprise Features |
-| sigma-repos | High | High | 24 | Enterprise Features |
+| Repository | Impact | Effort | Priority | Phase | Key Area Alignment |
+|------------|--------|--------|----------|-------|-------------------|
+| **sqlparser-rs** | High | Medium | 1 | Foundation | All 5 areas - SQL intelligence |
+| **stitches** | High | Low | 2 | Foundation | All 5 areas - Modern styling |
+| **html2canvas** | High | Low | 3 | Foundation | Areas 1,3,4,5 - Visual capture |
+| **hot-shots** | High | Low | 4 | Foundation | All 5 areas - Performance monitoring |
+| **babel-plugin-lodash** | Medium | Low | 5 | Foundation | All 5 areas - Bundle optimization |
+| **embed-sdk** | High | Medium | 6 | Foundation | Areas 1,2,4,5 - Sigma integration |
+| **quickstarts-public** | High | Low | 7 | Foundation | All 5 areas - Implementation guide |
+| **sigma-sample-api** | High | Low | 8 | Foundation | Areas 2,3,4,5 - API management |
+| **arrow** | High | Medium | 9 | Data & Performance | Areas 1,3,4,5 - Data performance |
+| **gosnowflake** | High | Medium | 10 | Data & Performance | Areas 2,3,4,5 - Data warehouse |
+| **grpc-node** | High | High | 11 | Data & Performance | Areas 1,2,3,4,5 - Real-time features |
+| **trino-go-client** | Medium | Medium | 12 | Data & Performance | Areas 2,3,4,5 - Data federation |
+| **databricks-sql-go** | Medium | Medium | 13 | Data & Performance | Areas 2,3,4,5 - Multi-cloud |
+| **google-cloud-go** | Medium | High | 14 | Data & Performance | Areas 2,3,4,5 - Cloud platform |
+| **editor** | High | High | 15 | Advanced Features | Areas 1,3,4,5 - Custom editing |
+| **sigma-sample-plugins** | High | Medium | 16 | Advanced Features | Areas 1,3,4,5 - Custom features |
+| **sigma-repos** | High | High | 17 | Advanced Features | All 5 areas - Core platform |
+| **i18next-parser** | Medium | Low | 18 | Advanced Features | All 5 areas - Globalization |
+
+### **🎯 Strategic Alignment: 5 Key Areas × 18 External Repositories**
+
+#### **Key Area 1: Advanced Workbook Interaction & User Experience**
+**Primary Repositories (High Impact):**
+- **sqlparser-rs** - Real-time SQL query analysis and optimization
+- **stitches** - Modern CSS-in-JS for component styling
+- **html2canvas** - Screenshot generation for workbook thumbnails
+- **hot-shots** - Performance monitoring for workbook interactions
+- **embed-sdk** - Enhanced React integration with Sigma
+- **arrow** - High-performance data processing
+- **grpc-node** - Real-time collaborative features
+
+**Secondary Repositories (Medium Impact):**
+- **babel-plugin-lodash** - Bundle optimization for faster loading
+- **quickstarts-public** - Implementation patterns and examples
+- **sigma-sample-plugins** - Custom visualization capabilities
+- **editor** - Custom visualization editing
+- **sigma-repos** - Core platform integration
+
+#### **Key Area 2: User Management & Access Control System**
+**Primary Repositories (High Impact):**
+- **gosnowflake** - High-performance user data access
+- **hot-shots** - User analytics and monitoring
+- **google-cloud-go** - Cloud-based user authentication
+- **sigma-sample-api** - User management API patterns
+- **grpc-node** - Real-time user synchronization
+- **i18next-parser** - Multi-language user interface
+
+**Secondary Repositories (Medium Impact):**
+- **databricks-sql-go** - Multi-cloud user management
+- **trino-go-client** - Federated user queries
+- **quickstarts-public** - User management patterns
+- **sigma-repos** - Core user management features
+
+#### **Key Area 3: Dynamic Workbook Discovery & Curation**
+**Primary Repositories (High Impact):**
+- **arrow** - High-performance data processing for metadata
+- **sqlparser-rs** - SQL-based workbook discovery and filtering
+- **html2canvas** - Visual workbook thumbnails and previews
+- **hot-shots** - Discovery analytics and user behavior tracking
+- **grpc-node** - Real-time workbook updates and notifications
+- **babel-plugin-lodash** - Optimized search and filtering functions
+
+**Secondary Repositories (Medium Impact):**
+- **gosnowflake** - Data source management
+- **databricks-sql-go** - Cloud-based discovery
+- **trino-go-client** - Cross-source discovery
+- **google-cloud-go** - Cloud-based discovery storage
+- **quickstarts-public** - Discovery patterns
+- **sigma-sample-api** - Discovery API patterns
+
+#### **Key Area 4: Advanced Embedding & Sharing Features**
+**Primary Repositories (High Impact):**
+- **html2canvas** - Visual sharing with screenshots
+- **grpc-node** - Real-time collaborative sharing
+- **hot-shots** - Sharing analytics and metrics
+- **embed-sdk** - Enhanced sharing with React SDK
+- **i18next-parser** - Multi-language sharing interfaces
+- **google-cloud-go** - Cloud-based sharing storage
+
+**Secondary Repositories (Medium Impact):**
+- **stitches** - Visual sharing interface styling
+- **arrow** - High-performance data sharing
+- **quickstarts-public** - Sharing patterns
+- **sigma-sample-api** - Sharing API patterns
+- **sigma-sample-plugins** - Custom sharing features
+
+#### **Key Area 5: Interactive Dashboard & Admin Tools**
+**Primary Repositories (High Impact):**
+- **hot-shots** - Comprehensive system monitoring
+- **grpc-node** - Real-time admin notifications
+- **arrow** - High-performance admin analytics
+- **google-cloud-go** - Cloud-based admin storage
+- **html2canvas** - Admin dashboard screenshots
+- **i18next-parser** - Multi-language admin interface
+
+**Secondary Repositories (Medium Impact):**
+- **sqlparser-rs** - Admin query analytics
+- **stitches** - Admin UI styling
+- **gosnowflake** - Admin data access
+- **databricks-sql-go** - Multi-cloud admin
+- **trino-go-client** - Admin federation
+- **quickstarts-public** - Admin patterns
+- **sigma-sample-api** - Admin API patterns
+- **sigma-repos** - Core admin features
+
+### **🚀 Implementation Strategy by Phase**
+
+#### **Phase 1: Foundation (Weeks 1-2)**
+**Focus**: Core functionality with high-impact, low-effort repositories
+1. **sqlparser-rs** - SQL intelligence across all areas
+2. **stitches** - Modern styling foundation
+3. **html2canvas** - Visual capture capabilities
+4. **hot-shots** - Performance monitoring
+5. **babel-plugin-lodash** - Bundle optimization
+6. **embed-sdk** - Enhanced Sigma integration
+7. **quickstarts-public** - Implementation guidance
+8. **sigma-sample-api** - API management patterns
+
+#### **Phase 2: Data & Performance (Weeks 3-4)**
+**Focus**: High-performance data processing and real-time features
+9. **arrow** - High-performance data processing
+10. **gosnowflake** - Data warehouse integration
+11. **grpc-node** - Real-time features
+12. **trino-go-client** - Data federation
+13. **databricks-sql-go** - Multi-cloud data access
+14. **google-cloud-go** - Cloud platform integration
+
+#### **Phase 3: Advanced Features (Weeks 5-6)**
+**Focus**: Custom features and global capabilities
+15. **editor** - Custom visualization editing
+16. **sigma-sample-plugins** - Custom features
+17. **sigma-repos** - Core platform integration
+18. **i18next-parser** - Globalization support
 
 ## **🚀 Next Steps**
 
@@ -7521,7 +7633,7 @@ const cloudDebug = {
 
 ---
 
-## **🎯 UPDATED IMPLEMENTATION STRATEGY**
+## **🎯 STRATEGIC ALIGNMENT WITH @EXTERNAL/ REPOSITORIES**
 
 ### **✅ Critical Success Factors from Debug-Embed Analysis**
 
@@ -7533,15 +7645,602 @@ All 5 key areas now incorporate the **proven patterns** from the successful debu
 4. **🛠️ Debug Interface**: Developer-friendly debugging accelerates development
 5. **📊 Visual Comparison**: Side-by-side validation catches issues immediately
 
+### **🚀 EXTERNAL REPOSITORY CAPABILITIES ALIGNMENT**
+
+Based on comprehensive analysis of all 18 repositories in `@external/`, here's how each key area can be enhanced:
+
+#### **📊 Repository Capability Matrix**
+
+| Repository | Key Area 1 | Key Area 2 | Key Area 3 | Key Area 4 | Key Area 5 | Primary Value |
+|------------|------------|------------|------------|------------|------------|---------------|
+| **sqlparser-rs** | ✅ SQL Analysis | ✅ Query Optimization | ✅ Data Discovery | ✅ Query Sharing | ✅ Admin Analytics | **SQL Intelligence** |
+| **stitches** | ✅ Component Styling | ✅ UI Consistency | ✅ Theme Management | ✅ Visual Sharing | ✅ Admin UI | **Modern Styling** |
+| **html2canvas** | ✅ Screenshot Generation | ✅ User Previews | ✅ Workbook Thumbnails | ✅ Visual Sharing | ✅ Admin Screenshots | **Visual Capture** |
+| **hot-shots** | ✅ Performance Metrics | ✅ User Analytics | ✅ Usage Tracking | ✅ Share Analytics | ✅ System Monitoring | **Performance Monitoring** |
+| **grpc-node** | ✅ Real-time Communication | ✅ User Sync | ✅ Live Updates | ✅ Collaborative Sharing | ✅ Admin Real-time | **Real-time Features** |
+| **arrow** | ✅ High-Performance Data | ✅ Fast User Queries | ✅ Efficient Discovery | ✅ Data Sharing | ✅ Analytics Performance | **Data Performance** |
+| **gosnowflake** | ✅ Snowflake Integration | ✅ User Data Access | ✅ Data Source Management | ✅ Cross-Platform Sharing | ✅ Admin Data Access | **Data Warehouse** |
+| **databricks-sql-go** | ✅ Multi-Cloud Data | ✅ Cloud User Access | ✅ Cloud Discovery | ✅ Cloud Sharing | ✅ Cloud Admin | **Multi-Cloud** |
+| **trino-go-client** | ✅ Federated Queries | ✅ Multi-Source Users | ✅ Cross-Source Discovery | ✅ Universal Sharing | ✅ Admin Federation | **Data Federation** |
+| **babel-plugin-lodash** | ✅ Bundle Optimization | ✅ Performance | ✅ Fast Loading | ✅ Efficient Sharing | ✅ Admin Performance | **Bundle Optimization** |
+| **i18next-parser** | ✅ Internationalization | ✅ Multi-Language Users | ✅ Global Discovery | ✅ Global Sharing | ✅ Admin i18n | **Globalization** |
+| **google-cloud-go** | ✅ Cloud Integration | ✅ Cloud Users | ✅ Cloud Discovery | ✅ Cloud Sharing | ✅ Cloud Admin | **Cloud Platform** |
+| **embed-sdk** | ✅ React Integration | ✅ User Experience | ✅ SDK Discovery | ✅ SDK Sharing | ✅ Admin SDK | **Sigma Integration** |
+| **quickstarts-public** | ✅ Implementation Examples | ✅ User Patterns | ✅ Discovery Patterns | ✅ Sharing Patterns | ✅ Admin Patterns | **Implementation Guide** |
+| **sigma-sample-api** | ✅ API Integration | ✅ User Management | ✅ API Discovery | ✅ API Sharing | ✅ Admin APIs | **API Management** |
+| **sigma-sample-plugins** | ✅ Custom Visualizations | ✅ User Plugins | ✅ Plugin Discovery | ✅ Plugin Sharing | ✅ Admin Plugins | **Custom Features** |
+| **editor** | ✅ Custom Editor | ✅ User Editing | ✅ Editor Discovery | ✅ Editor Sharing | ✅ Admin Editor | **Custom Editing** |
+| **sigma-repos** | ✅ Core Integration | ✅ Core Features | ✅ Core Discovery | ✅ Core Sharing | ✅ Core Admin | **Core Platform** |
+
+### **🚀 ENHANCED IMPLEMENTATION STRATEGY WITH EXTERNAL REPOSITORIES**
+
+#### **🎯 Key Area 1: Advanced Workbook Interaction & User Experience**
+
+**External Repository Integration:**
+- **sqlparser-rs**: Real-time SQL query analysis and optimization
+- **stitches**: Modern CSS-in-JS for component styling
+- **html2canvas**: Screenshot generation for workbook thumbnails
+- **hot-shots**: Performance monitoring for workbook interactions
+- **grpc-node**: Real-time collaborative features
+- **arrow**: High-performance data processing
+- **embed-sdk**: Enhanced React integration
+
+**Detailed Implementation:**
+```typescript
+// Enhanced Workbook Component with External Repository Integration
+import { useSigmaIframe } from '@sigmacomputing/react-embed-sdk';
+import { styled } from '@stitches/react';
+import html2canvas from 'html2canvas';
+import { StatsD } from 'hot-shots';
+
+const WorkbookContainer = styled('div', {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '$4',
+  padding: '$4',
+  borderRadius: '$3',
+  border: '1px solid $gray6',
+  '&:hover': {
+    borderColor: '$blue6',
+    boxShadow: '$2'
+  }
+});
+
+const WorkbookThumbnail = styled('div', {
+  width: '100%',
+  height: '200px',
+  borderRadius: '$2',
+  overflow: 'hidden',
+  cursor: 'pointer',
+  '&:hover': {
+    transform: 'scale(1.02)',
+    transition: 'transform 0.2s ease'
+  }
+});
+
+function EnhancedWorkbookEmbed({ workbookId, userEmail, showDebugMode = false }) {
+  const [embedURL, setEmbedURL] = useState('');
+  const [thumbnail, setThumbnail] = useState(null);
+  const [sqlAnalysis, setSqlAnalysis] = useState(null);
+  const [performance, setPerformance] = useState({});
+  
+  const statsd = new StatsD({
+    host: 'localhost',
+    port: 8125,
+    prefix: 'sigma.playground.'
+  });
+
+  // SQL Analysis with sqlparser-rs
+  const analyzeWorkbookSQL = async (workbookId: string) => {
+    try {
+      const response = await fetch(`/api/v1/workbooks/${workbookId}/sql-analysis`);
+      const analysis = await response.json();
+      setSqlAnalysis(analysis);
+      statsd.increment('workbook.sql_analysis.success');
+    } catch (error) {
+      statsd.increment('workbook.sql_analysis.error');
+      console.error('SQL analysis failed:', error);
+    }
+  };
+
+  // Screenshot Generation with html2canvas
+  const generateThumbnail = async (element: HTMLElement) => {
+    try {
+      const canvas = await html2canvas(element, {
+        height: 200,
+        width: 400,
+        scale: 0.5,
+        useCORS: true
+      });
+      const dataURL = canvas.toDataURL('image/png');
+      setThumbnail(dataURL);
+      statsd.timing('workbook.thumbnail.generation', Date.now() - performance.now());
+    } catch (error) {
+      statsd.increment('workbook.thumbnail.error');
+      console.error('Thumbnail generation failed:', error);
+    }
+  };
+
+  // Performance Monitoring with hot-shots
+  const trackPerformance = (action: string, startTime: number) => {
+    const duration = Date.now() - startTime;
+    statsd.timing(`workbook.${action}.duration`, duration);
+    setPerformance(prev => ({ ...prev, [action]: duration }));
+  };
+
+  return (
+    <WorkbookContainer>
+      {showDebugMode && (
+        <div className="debug-panel">
+          <Button onClick={() => analyzeWorkbookSQL(workbookId)}>
+            Analyze SQL
+          </Button>
+          <Button onClick={() => generateThumbnail(document.getElementById('workbook-iframe'))}>
+            Generate Thumbnail
+          </Button>
+          {sqlAnalysis && (
+            <div className="sql-analysis">
+              <h4>SQL Analysis</h4>
+              <pre>{JSON.stringify(sqlAnalysis, null, 2)}</pre>
+            </div>
+          )}
+        </div>
+      )}
+      
+      {thumbnail && (
+        <WorkbookThumbnail>
+          <img src={thumbnail} alt="Workbook Thumbnail" />
+        </WorkbookThumbnail>
+      )}
+      
+      <iframe
+        id="workbook-iframe"
+        src={embedURL}
+        width="100%"
+        height="600"
+        onLoad={() => trackPerformance('load', performance.now())}
+      />
+    </WorkbookContainer>
+  );
+}
+```
+
+#### **🎯 Key Area 2: User Management & Access Control System**
+
+**External Repository Integration:**
+- **gosnowflake**: High-performance Snowflake user data access
+- **databricks-sql-go**: Multi-cloud user management
+- **trino-go-client**: Federated user queries across data sources
+- **google-cloud-go**: Cloud-based user authentication and storage
+- **hot-shots**: User analytics and monitoring
+- **i18next-parser**: Multi-language user interface
+
+**Detailed Implementation:**
+```typescript
+// Enhanced User Management with External Repository Integration
+import { StatsD } from 'hot-shots';
+import { i18n } from 'i18next';
+
+const UserManagementSystem = {
+  // Snowflake Integration for User Data
+  async getUserDataFromSnowflake(userId: string) {
+    const statsd = new StatsD({ host: 'localhost', port: 8125 });
+    const startTime = performance.now();
+    
+    try {
+      const response = await fetch('/api/v1/users/snowflake', {
+        method: 'POST',
+        body: JSON.stringify({ userId, dataSource: 'snowflake' })
+      });
+      
+      const userData = await response.json();
+      statsd.timing('user.snowflake.query', Date.now() - startTime);
+      return userData;
+    } catch (error) {
+      statsd.increment('user.snowflake.error');
+      throw error;
+    }
+  },
+
+  // Multi-Cloud User Management
+  async getUserDataFromCloud(userId: string, cloudProvider: 'gcp' | 'aws' | 'azure') {
+    const statsd = new StatsD({ host: 'localhost', port: 8125 });
+    const startTime = performance.now();
+    
+    try {
+      const response = await fetch('/api/v1/users/cloud', {
+        method: 'POST',
+        body: JSON.stringify({ userId, cloudProvider })
+      });
+      
+      const userData = await response.json();
+      statsd.timing(`user.${cloudProvider}.query`, Date.now() - startTime);
+      return userData;
+    } catch (error) {
+      statsd.increment(`user.${cloudProvider}.error`);
+      throw error;
+    }
+  },
+
+  // Federated User Queries
+  async getFederatedUserData(userId: string) {
+    const statsd = new StatsD({ host: 'localhost', port: 8125 });
+    const startTime = performance.now();
+    
+    try {
+      const [snowflakeData, cloudData, trinoData] = await Promise.all([
+        this.getUserDataFromSnowflake(userId),
+        this.getUserDataFromCloud(userId, 'gcp'),
+        this.getUserDataFromTrino(userId)
+      ]);
+      
+      const federatedData = this.mergeUserData([snowflakeData, cloudData, trinoData]);
+      statsd.timing('user.federated.query', Date.now() - startTime);
+      return federatedData;
+    } catch (error) {
+      statsd.increment('user.federated.error');
+      throw error;
+    }
+  },
+
+  // Internationalization Support
+  async getUserPreferences(userId: string) {
+    const response = await fetch(`/api/v1/users/${userId}/preferences`);
+    const preferences = await response.json();
+    
+    // Set user language preference
+    if (preferences.language) {
+      await i18n.changeLanguage(preferences.language);
+    }
+    
+    return preferences;
+  }
+};
+```
+
+#### **🎯 Key Area 3: Dynamic Workbook Discovery & Curation**
+
+**External Repository Integration:**
+- **arrow**: High-performance data processing for workbook metadata
+- **sqlparser-rs**: SQL-based workbook discovery and filtering
+- **html2canvas**: Visual workbook thumbnails and previews
+- **hot-shots**: Discovery analytics and user behavior tracking
+- **grpc-node**: Real-time workbook updates and notifications
+- **babel-plugin-lodash**: Optimized search and filtering functions
+
+**Detailed Implementation:**
+```typescript
+// Enhanced Workbook Discovery with External Repository Integration
+import { StatsD } from 'hot-shots';
+import html2canvas from 'html2canvas';
+
+const WorkbookDiscoverySystem = {
+  // High-Performance Workbook Search with Arrow
+  async searchWorkbooks(query: string, filters: any) {
+    const statsd = new StatsD({ host: 'localhost', port: 8125 });
+    const startTime = performance.now();
+    
+    try {
+      const response = await fetch('/api/v1/workbooks/search', {
+        method: 'POST',
+        body: JSON.stringify({ 
+          query, 
+          filters,
+          useArrow: true, // Enable Arrow for high-performance processing
+          limit: 50
+        })
+      });
+      
+      const results = await response.json();
+      statsd.timing('workbook.search.arrow', Date.now() - startTime);
+      statsd.increment('workbook.search.results', results.length);
+      return results;
+    } catch (error) {
+      statsd.increment('workbook.search.error');
+      throw error;
+    }
+  },
+
+  // SQL-Based Workbook Discovery
+  async discoverWorkbooksBySQL(sqlQuery: string) {
+    const statsd = new StatsD({ host: 'localhost', port: 8125 });
+    const startTime = performance.now();
+    
+    try {
+      // Parse SQL query for workbook discovery
+      const response = await fetch('/api/v1/workbooks/sql-discovery', {
+        method: 'POST',
+        body: JSON.stringify({ sqlQuery })
+      });
+      
+      const results = await response.json();
+      statsd.timing('workbook.sql_discovery', Date.now() - startTime);
+      return results;
+    } catch (error) {
+      statsd.increment('workbook.sql_discovery.error');
+      throw error;
+    }
+  },
+
+  // Visual Workbook Previews
+  async generateWorkbookPreviews(workbookIds: string[]) {
+    const statsd = new StatsD({ host: 'localhost', port: 8125 });
+    const startTime = performance.now();
+    
+    try {
+      const previews = await Promise.all(
+        workbookIds.map(async (id) => {
+          const element = document.getElementById(`workbook-${id}`);
+          if (element) {
+            const canvas = await html2canvas(element, {
+              height: 150,
+              width: 300,
+              scale: 0.5
+            });
+            return {
+              id,
+              thumbnail: canvas.toDataURL('image/png')
+            };
+          }
+          return null;
+        })
+      );
+      
+      statsd.timing('workbook.previews.generation', Date.now() - startTime);
+      return previews.filter(Boolean);
+    } catch (error) {
+      statsd.increment('workbook.previews.error');
+      throw error;
+    }
+  },
+
+  // Real-time Workbook Updates
+  async subscribeToWorkbookUpdates(callback: (update: any) => void) {
+    const statsd = new StatsD({ host: 'localhost', port: 8125 });
+    
+    try {
+      // Use gRPC for real-time updates
+      const grpcClient = new WorkbookUpdateClient('localhost:50051');
+      const stream = grpcClient.subscribeToUpdates();
+      
+      stream.on('data', (update) => {
+        statsd.increment('workbook.update.received');
+        callback(update);
+      });
+      
+      stream.on('error', (error) => {
+        statsd.increment('workbook.update.error');
+        console.error('Workbook update error:', error);
+      });
+    } catch (error) {
+      statsd.increment('workbook.subscription.error');
+      throw error;
+    }
+  }
+};
+```
+
+#### **🎯 Key Area 4: Advanced Embedding & Sharing Features**
+
+**External Repository Integration:**
+- **html2canvas**: Visual sharing with screenshots
+- **grpc-node**: Real-time collaborative sharing
+- **hot-shots**: Sharing analytics and metrics
+- **i18next-parser**: Multi-language sharing interfaces
+- **google-cloud-go**: Cloud-based sharing storage
+- **embed-sdk**: Enhanced sharing with React SDK
+
+**Detailed Implementation:**
+```typescript
+// Enhanced Sharing Features with External Repository Integration
+import { StatsD } from 'hot-shots';
+import html2canvas from 'html2canvas';
+import { useSigmaIframe } from '@sigmacomputing/react-embed-sdk';
+
+const SharingSystem = {
+  // Visual Sharing with Screenshots
+  async shareWorkbookWithScreenshot(workbookId: string, shareOptions: any) {
+    const statsd = new StatsD({ host: 'localhost', port: 8125 });
+    const startTime = performance.now();
+    
+    try {
+      // Generate screenshot
+      const element = document.getElementById(`workbook-${workbookId}`);
+      const canvas = await html2canvas(element, {
+        height: 400,
+        width: 800,
+        scale: 0.8
+      });
+      
+      const screenshot = canvas.toDataURL('image/png');
+      
+      // Upload to cloud storage
+      const response = await fetch('/api/v1/sharing/upload-screenshot', {
+        method: 'POST',
+        body: JSON.stringify({
+          workbookId,
+          screenshot,
+          shareOptions
+        })
+      });
+      
+      const shareData = await response.json();
+      statsd.timing('sharing.screenshot.generation', Date.now() - startTime);
+      statsd.increment('sharing.screenshot.success');
+      return shareData;
+    } catch (error) {
+      statsd.increment('sharing.screenshot.error');
+      throw error;
+    }
+  },
+
+  // Real-time Collaborative Sharing
+  async enableCollaborativeSharing(workbookId: string, participants: string[]) {
+    const statsd = new StatsD({ host: 'localhost', port: 8125 });
+    
+    try {
+      // Use gRPC for real-time collaboration
+      const grpcClient = new CollaborativeSharingClient('localhost:50051');
+      const session = await grpcClient.createCollaborativeSession({
+        workbookId,
+        participants
+      });
+      
+      statsd.increment('sharing.collaborative.session_created');
+      return session;
+    } catch (error) {
+      statsd.increment('sharing.collaborative.error');
+      throw error;
+    }
+  },
+
+  // Multi-language Sharing
+  async shareWorkbookInLanguage(workbookId: string, language: string) {
+    const statsd = new StatsD({ host: 'localhost', port: 8125 });
+    
+    try {
+      // Set language for sharing interface
+      await i18n.changeLanguage(language);
+      
+      const response = await fetch('/api/v1/sharing/multi-language', {
+        method: 'POST',
+        body: JSON.stringify({
+          workbookId,
+          language,
+          includeTranslations: true
+        })
+      });
+      
+      const shareData = await response.json();
+      statsd.increment(`sharing.language.${language}`);
+      return shareData;
+    } catch (error) {
+      statsd.increment('sharing.language.error');
+      throw error;
+    }
+  }
+};
+```
+
+#### **🎯 Key Area 5: Interactive Dashboard & Admin Tools**
+
+**External Repository Integration:**
+- **hot-shots**: Comprehensive system monitoring
+- **grpc-node**: Real-time admin notifications
+- **arrow**: High-performance admin analytics
+- **google-cloud-go**: Cloud-based admin storage
+- **html2canvas**: Admin dashboard screenshots
+- **i18next-parser**: Multi-language admin interface
+
+**Detailed Implementation:**
+```typescript
+// Enhanced Admin Dashboard with External Repository Integration
+import { StatsD } from 'hot-shots';
+import html2canvas from 'html2canvas';
+
+const AdminDashboardSystem = {
+  // Comprehensive System Monitoring
+  async getSystemMetrics() {
+    const statsd = new StatsD({ host: 'localhost', port: 8125 });
+    const startTime = performance.now();
+    
+    try {
+      const metrics = await Promise.all([
+        this.getUserMetrics(),
+        this.getWorkbookMetrics(),
+        this.getPerformanceMetrics(),
+        this.getErrorMetrics()
+      ]);
+      
+      const systemMetrics = this.aggregateMetrics(metrics);
+      statsd.timing('admin.metrics.aggregation', Date.now() - startTime);
+      return systemMetrics;
+    } catch (error) {
+      statsd.increment('admin.metrics.error');
+      throw error;
+    }
+  },
+
+  // Real-time Admin Notifications
+  async subscribeToAdminNotifications(callback: (notification: any) => void) {
+    const statsd = new StatsD({ host: 'localhost', port: 8125 });
+    
+    try {
+      const grpcClient = new AdminNotificationClient('localhost:50051');
+      const stream = grpcClient.subscribeToNotifications();
+      
+      stream.on('data', (notification) => {
+        statsd.increment('admin.notification.received');
+        callback(notification);
+      });
+      
+      stream.on('error', (error) => {
+        statsd.increment('admin.notification.error');
+        console.error('Admin notification error:', error);
+      });
+    } catch (error) {
+      statsd.increment('admin.subscription.error');
+      throw error;
+    }
+  },
+
+  // High-Performance Admin Analytics
+  async getAdminAnalytics(timeRange: string) {
+    const statsd = new StatsD({ host: 'localhost', port: 8125 });
+    const startTime = performance.now();
+    
+    try {
+      const response = await fetch('/api/v1/admin/analytics', {
+        method: 'POST',
+        body: JSON.stringify({
+          timeRange,
+          useArrow: true, // Enable Arrow for high-performance analytics
+          includeRealTime: true
+        })
+      });
+      
+      const analytics = await response.json();
+      statsd.timing('admin.analytics.arrow', Date.now() - startTime);
+      return analytics;
+    } catch (error) {
+      statsd.increment('admin.analytics.error');
+      throw error;
+    }
+  },
+
+  // Admin Dashboard Screenshots
+  async generateAdminScreenshot(section: string) {
+    const statsd = new StatsD({ host: 'localhost', port: 8125 });
+    const startTime = performance.now();
+    
+    try {
+      const element = document.getElementById(`admin-${section}`);
+      const canvas = await html2canvas(element, {
+        height: 600,
+        width: 1200,
+        scale: 0.8
+      });
+      
+      const screenshot = canvas.toDataURL('image/png');
+      statsd.timing('admin.screenshot.generation', Date.now() - startTime);
+      return screenshot;
+    } catch (error) {
+      statsd.increment('admin.screenshot.error');
+      throw error;
+    }
+  }
+};
+```
+
 ### **🚀 Implementation Priority Matrix**
 
-| Key Area | Debug-Embed Integration | Priority | Implementation Time |
-|----------|------------------------|----------|-------------------|
-| **1. Advanced Workbook Interaction** | ✅ Universal debug component | **HIGH** | Week 1 |
-| **2. User Management & Access Control** | ✅ JWT configuration patterns | **HIGH** | Week 1-2 |
-| **3. Dynamic Workbook Discovery** | ✅ Real-time testing patterns | **MEDIUM** | Week 2 |
-| **4. Advanced Embedding & Sharing** | ✅ Dual-mode sharing patterns | **MEDIUM** | Week 2-3 |
-| **5. Interactive Dashboard & Admin** | ✅ Comprehensive debug patterns | **LOW** | Week 3-4 |
+| Key Area | Debug-Embed Integration | External Repository Priority | Implementation Time |
+|----------|------------------------|------------------------------|-------------------|
+| **1. Advanced Workbook Interaction** | ✅ Universal debug component | **HIGH** - sqlparser-rs, stitches, html2canvas | Week 1 |
+| **2. User Management & Access Control** | ✅ JWT configuration patterns | **HIGH** - gosnowflake, hot-shots, google-cloud-go | Week 1-2 |
+| **3. Dynamic Workbook Discovery** | ✅ Real-time testing patterns | **MEDIUM** - arrow, grpc-node, babel-plugin-lodash | Week 2 |
+| **4. Advanced Embedding & Sharing** | ✅ Dual-mode sharing patterns | **MEDIUM** - html2canvas, grpc-node, i18next-parser | Week 2-3 |
+| **5. Interactive Dashboard & Admin** | ✅ Comprehensive debug patterns | **LOW** - hot-shots, arrow, google-cloud-go | Week 3-4 |
 
 ### **🎯 Immediate Next Steps (Updated)**
 
