@@ -5,10 +5,15 @@ import { PrismaService } from '../prisma/prisma.service';
 export class WorkbooksService {
   constructor(private prisma: PrismaService) {}
 
-  // Placeholder implementation
-  async findAll() {
+  async findAll(featured?: boolean, limit?: number) {
+    const whereClause: any = { is_publicly_visible: true };
+    
+    if (featured) {
+      whereClause.is_featured = true;
+    }
+
     return this.prisma.workbook.findMany({
-      where: { is_publicly_visible: true },
+      where: whereClause,
       include: {
         author: {
           select: {
@@ -30,7 +35,8 @@ export class WorkbooksService {
           },
         },
       },
-      orderBy: { published_at: 'desc' },
+      orderBy: featured ? { featured_at: 'desc' } : { published_at: 'desc' },
+      take: limit,
     });
   }
 
