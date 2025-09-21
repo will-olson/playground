@@ -23,15 +23,17 @@ export class WorkbooksController {
     return this.workbooksService.findAll();
   }
 
-  @Get('sigma')
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get user workbooks from Sigma' })
-  @ApiResponse({ status: 200, description: 'Sigma workbooks retrieved successfully' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
-  async getSigmaWorkbooks(@Request() req: any) {
-    const user = req.user;
-    return this.sigmaApiService.getUserWorkbooks(user.email);
+  @Get(':id')
+  @ApiOperation({ summary: 'Get a specific workbook by ID' })
+  @ApiParam({ name: 'id', description: 'Workbook ID' })
+  @ApiResponse({ status: 200, description: 'Workbook retrieved successfully' })
+  @ApiResponse({ status: 404, description: 'Workbook not found' })
+  async findOne(@Param('id') id: string) {
+    const workbook = await this.workbooksService.findOne(id);
+    if (!workbook) {
+      throw new NotFoundException('Workbook not found');
+    }
+    return workbook;
   }
 
   @Post(':id/favorite')
@@ -48,17 +50,15 @@ export class WorkbooksController {
     return result;
   }
 
-  @Get(':id')
-  @ApiOperation({ summary: 'Get a specific workbook by ID' })
-  @ApiParam({ name: 'id', description: 'Workbook ID' })
-  @ApiResponse({ status: 200, description: 'Workbook retrieved successfully' })
-  @ApiResponse({ status: 404, description: 'Workbook not found' })
-  async findOne(@Param('id') id: string) {
-    const workbook = await this.workbooksService.findOne(id);
-    if (!workbook) {
-      throw new NotFoundException('Workbook not found');
-    }
-    return workbook;
+  @Get('sigma')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get user workbooks from Sigma' })
+  @ApiResponse({ status: 200, description: 'Sigma workbooks retrieved successfully' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  async getSigmaWorkbooks(@Request() req: any) {
+    const user = req.user;
+    return this.sigmaApiService.getUserWorkbooks(user.email);
   }
 
   @Post('import/:workbookId')

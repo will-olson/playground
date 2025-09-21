@@ -119,6 +119,11 @@ export class SigmaApiService {
       // For now, return all workbooks since the user has access via OAuth
       // In the future, we could filter by member access if needed
       this.logger.debug(`Found ${allWorkbooks.length} workbooks for user: ${userEmail}`);
+      
+      // Debug: Log the actual workbook IDs from Sigma
+      allWorkbooks.forEach((workbook: any, index: number) => {
+        this.logger.debug(`Sigma Workbook ${index + 1}: ID=${workbook.workbookId}, Name=${workbook.name}`);
+      });
 
       return allWorkbooks.map((workbook: any) => ({
         id: workbook.workbookId,
