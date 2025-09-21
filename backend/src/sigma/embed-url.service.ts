@@ -61,22 +61,34 @@ export class EmbedURLService {
     // Convert API path to embed path
     // API: /workbook/workbookName/workbookId
     // Embed: /workbook/workbookName-workbookId
+    // Also handle: /workbook/workbook-workbookId format
     
     const pathParts = workbookPath.split('/');
-    if (pathParts[0] === 'workbook' && pathParts.length >= 3) {
-      const workbookName = pathParts[1];
-      const workbookId = pathParts[2];
-      let embedPath = `/${orgSlug}/workbook/${workbookName}-${workbookId}`;
+    if (pathParts[0] === 'workbook' && pathParts.length >= 2) {
+      let embedPath: string;
       
-      // Add additional path segments (page, element, tag)
-      if (pathParts.length > 3) {
-        embedPath += '/' + pathParts.slice(3).join('/');
+      if (pathParts.length >= 3) {
+        // Format: workbook/workbookName/workbookId
+        const workbookName = pathParts[1];
+        const workbookId = pathParts[2];
+        embedPath = `/${orgSlug}/workbook/${workbookName}-${workbookId}`;
+        
+        // Add additional path segments (page, element, tag)
+        if (pathParts.length > 3) {
+          embedPath += '/' + pathParts.slice(3).join('/');
+        }
+      } else if (pathParts.length === 2) {
+        // Format: workbook/workbook-workbookId (already in embed format)
+        const workbookIdentifier = pathParts[1];
+        embedPath = `/${orgSlug}/workbook/${workbookIdentifier}`;
+      } else {
+        throw new Error('Invalid workbook path format. Expected: workbook/workbookName/workbookId or workbook/workbook-workbookId');
       }
       
       return embedPath;
     }
     
-    throw new Error('Invalid workbook path format. Expected: workbook/workbookName/workbookId');
+    throw new Error('Invalid workbook path format. Expected: workbook/workbookName/workbookId or workbook/workbook-workbookId');
   }
 
   private addOptionalParameters(url: URL, options: EmbedURLOptions): void {

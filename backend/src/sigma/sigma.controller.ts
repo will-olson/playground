@@ -1,10 +1,9 @@
-import { Controller, Post, Body, Get, Query, BadRequestException, Request } from '@nestjs/common';
+import { Controller, Post, Body, Get, Query, BadRequestException } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { SigmaJWTService, JWTGenerationOptions } from './sigma-jwt.service';
 import { EmbedURLService, EmbedURLOptions } from './embed-url.service';
 import { CreateEmbedDto, TestEmbedDto } from './dto/create-embed.dto';
-import { SigmaApiService } from './sigma-api.service';
 
 @ApiTags('Sigma Embedding')
 @Controller('sigma')
@@ -12,8 +11,7 @@ export class SigmaController {
   constructor(
     private readonly jwtService: SigmaJWTService,
     private readonly embedURLService: EmbedURLService,
-    private readonly configService: ConfigService,
-    private readonly sigmaApiService: SigmaApiService
+    private readonly configService: ConfigService
   ) {}
 
   @Post('embed')
@@ -132,39 +130,8 @@ export class SigmaController {
       },
       services: {
         jwtService: 'available',
-        embedURLService: 'available',
-        sigmaApiService: 'available'
+        embedURLService: 'available'
       }
-    };
-  }
-
-  @Get('user-workbooks')
-  @ApiOperation({ summary: 'Get user workbooks from Sigma' })
-  @ApiResponse({ status: 200, description: 'User workbooks retrieved successfully' })
-  async getUserWorkbooks(@Request() req) {
-    try {
-      const userEmail = req.user?.email || 'test@example.com';
-      const workbooks = await this.sigmaApiService.getUserWorkbooks(userEmail);
-      
-      return {
-        success: true,
-        userEmail,
-        workbooks,
-        count: workbooks.length
-      };
-    } catch (error) {
-      throw new BadRequestException(`Failed to fetch user workbooks: ${error.message}`);
-    }
-  }
-
-  @Get('test-user-workbooks')
-  @ApiOperation({ summary: 'Test user workbooks endpoint' })
-  @ApiResponse({ status: 200, description: 'Test endpoint' })
-  async testUserWorkbooks() {
-    return {
-      success: true,
-      message: 'Test endpoint working',
-      timestamp: new Date().toISOString()
     };
   }
 

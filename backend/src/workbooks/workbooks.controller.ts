@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Delete, Param, UseGuards, Request, Body, NotFoundException, Query } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Param, UseGuards, Request, Body, NotFoundException } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { WorkbooksService } from './workbooks.service';
 import { SigmaApiService } from '../sigma/sigma-api.service';
@@ -19,9 +19,8 @@ export class WorkbooksController {
   @Get()
   @ApiOperation({ summary: 'Get all public workbooks' })
   @ApiResponse({ status: 200, description: 'Workbooks retrieved successfully' })
-  async findAll(@Query('featured') featured?: string, @Query('limit') limit?: string) {
-    const limitNum = limit ? parseInt(limit, 10) : undefined;
-    return this.workbooksService.findAll(featured === 'true', limitNum);
+  async findAll() {
+    return this.workbooksService.findAll();
   }
 
   @Get(':id')
