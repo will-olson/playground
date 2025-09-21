@@ -1,6 +1,7 @@
 import { Injectable, UnauthorizedException, ConflictException, BadRequestException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../prisma/prisma.service';
+import { SigmaMemberService } from '../sigma/sigma-member.service';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginDto } from './dto/login.dto';
@@ -11,6 +12,7 @@ export class AuthService {
   constructor(
     private prisma: PrismaService,
     private jwtService: JwtService,
+    private sigmaMemberService: SigmaMemberService,
   ) {}
 
   async register(createUserDto: CreateUserDto): Promise<AuthTokens> {
@@ -49,6 +51,30 @@ export class AuthService {
         is_active: true,
       },
     });
+
+    // Create Sigma account with appropriate member type based on user type
+    try {
+      const firstName = (full_name || '').split(' ')[0] || '';
+      const lastName = (full_name || '').split(' ').slice(1).join(' ') || '';
+      
+      // Determine member type based on email domain
+      const memberType = this.determineMemberType(email);
+      
+      const sigmaMember = await this.sigmaMemberService.createSigmaMember({
+        email: user.email,
+        firstName,
+        lastName,
+        memberType
+      });
+
+      // Link Sigma account to application account
+      await this.linkAccounts(user.id, sigmaMember.memberId, sigmaMember.memberType);
+
+      console.log(`✅ Created Sigma account for ${user.email} with member type: ${sigmaMember.memberType}`);
+    } catch (error) {
+      console.error('❌ Failed to create Sigma account:', error.message);
+      // Continue with app account creation even if Sigma fails
+    }
 
     // Generate tokens
     const tokens = await this.generateTokens(user);
@@ -93,6 +119,11 @@ export class AuthService {
     const isPasswordValid = await bcrypt.compare(password, user.password_hash);
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid credentials');
+    }
+
+    // Check if user has Sigma account linked, if not try to link one
+    if (!user.sigma_member_id) {
+      await this.attemptSigmaAccountLinking(user);
     }
 
     // Update last login
@@ -229,6 +260,60 @@ export class AuthService {
     return user;
   }
 
+  async getUserProfile(userId: string): Promise<any> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        full_name: true,
+        bio: true,
+        title: true,
+        organization: true,
+        location: true,
+        profile_image_url: true,
+        is_admin: true,
+        is_verified: true,
+        is_active: true,
+        last_login_at: true,
+        created_at: true,
+        updated_at: true,
+        // Sigma account information
+        sigma_member_id: true,
+        sigma_member_type: true,
+        sigma_account_created_at: true,
+      },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    // Get Sigma account details if linked
+    let sigmaAccount: any = null;
+    if (user.sigma_member_id) {
+      try {
+        const memberDetails = await this.sigmaMemberService.getMemberDetails(user.sigma_member_id);
+        sigmaAccount = {
+          memberId: memberDetails.memberId,
+          memberType: memberDetails.memberType,
+          email: memberDetails.email,
+          firstName: memberDetails.firstName,
+          lastName: memberDetails.lastName,
+        };
+      } catch (error) {
+        console.warn('Failed to fetch Sigma account details:', error.message);
+      }
+    }
+
+    return {
+      ...user,
+      sigmaAccount,
+      hasSigmaAccount: !!user.sigma_member_id,
+    };
+  }
+
   async authenticateSigmaUser(email: string, password: string): Promise<AuthTokens | null> {
     // Validate against Sigma test credentials
     const validCredentials = this.validateSigmaTestCredentials(email, password);
@@ -324,6 +409,69 @@ export class AuthService {
       accessToken,
       refreshToken,
     };
+  }
+
+  /**
+   * Determine Sigma member type based on email domain
+   */
+  private determineMemberType(email: string): 'creator' | 'explorer' | 'viewer' | 'admin' {
+    if (email.endsWith('@sigmacomputing.com')) {
+      return 'creator'; // Internal users get creator permissions
+    }
+    return 'viewer'; // External users get viewer permissions by default
+  }
+
+  /**
+   * Link application account to Sigma account
+   */
+  private async linkAccounts(
+    appUserId: string, 
+    sigmaMemberId: string, 
+    sigmaMemberType: string
+  ): Promise<void> {
+    await this.prisma.user.update({
+      where: { id: appUserId },
+      data: {
+        sigma_member_id: sigmaMemberId,
+        sigma_member_type: sigmaMemberType,
+        sigma_account_created_at: new Date(),
+      },
+    });
+  }
+
+  /**
+   * Attempt to link existing Sigma account or create new one
+   */
+  private async attemptSigmaAccountLinking(user: any): Promise<void> {
+    try {
+      // Check if Sigma account exists for this email
+      const existingMember = await this.sigmaMemberService.getMemberByEmail(user.email);
+      
+      if (existingMember) {
+        // Link existing Sigma account
+        console.log(`Found existing Sigma account for ${user.email}, linking...`);
+        await this.linkAccounts(user.id, existingMember.memberId, existingMember.memberType);
+        console.log(`✅ Linked existing Sigma account for ${user.email}`);
+      } else {
+        // Create new Sigma account
+        console.log(`No existing Sigma account found for ${user.email}, creating new one...`);
+        const firstName = (user.full_name || '').split(' ')[0] || '';
+        const lastName = (user.full_name || '').split(' ').slice(1).join(' ') || '';
+        
+        const sigmaMember = await this.sigmaMemberService.createSigmaMember({
+          email: user.email,
+          firstName,
+          lastName,
+          memberType: this.determineMemberType(user.email)
+        });
+        
+        await this.linkAccounts(user.id, sigmaMember.memberId, sigmaMember.memberType);
+        console.log(`✅ Created and linked new Sigma account for ${user.email}`);
+      }
+    } catch (error) {
+      console.warn(`Failed to link Sigma account for ${user.email}:`, error.message);
+      // Don't throw error - user can still use the app without Sigma account
+    }
   }
 }
 

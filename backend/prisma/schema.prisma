@@ -30,6 +30,12 @@ model User {
   is_verified       Boolean     @default(false)
   is_active         Boolean     @default(true)
   last_login_at     DateTime?
+  
+  // Sigma Account Integration
+  sigma_member_id   String?     @unique
+  sigma_member_type String?     // creator, explorer, viewer, admin
+  sigma_account_created_at DateTime?
+  
   created_at        DateTime    @default(now())
   updated_at        DateTime    @updatedAt
 
