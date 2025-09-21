@@ -2,7 +2,19 @@
 
 ## 🎯 **Focus: Building on test@example.com Account**
 
-Based on analysis of `@sigmaEmbed/` documentation, `@external/` API resources, and the PRD, here are 5 key areas where Sigma embed capabilities can accelerate product development:
+Based on analysis of `@sigmaEmbed/` documentation, `@external/` API resources, the PRD, and **critical learnings from the successful debug-embed page**, here are 5 key areas where Sigma embed capabilities can accelerate product development:
+
+## 🚀 **BREAKTHROUGH INSIGHTS FROM DEBUG-EMBED SUCCESS**
+
+### **✅ What We Learned from Debug-Embed Page**
+1. **🔐 JWT Configuration is Critical**: `isEmbedUser: false` for internal users is the key to success
+2. **🔄 Dual-Mode Testing Works**: Side-by-side JWT vs direct URL comparison enables rapid debugging
+3. **⚡ Real-Time Generation**: Live API integration with immediate feedback is essential
+4. **🛠️ Debug Interface**: Developer-friendly debugging accelerates development
+5. **📊 Visual Comparison**: Side-by-side validation catches issues immediately
+
+### **🎯 Updated Strategy**
+All 5 key areas below now incorporate these proven patterns from debug-embed success.
 
 ---
 
@@ -10,9 +22,91 @@ Based on analysis of `@sigmaEmbed/` documentation, `@external/` API resources, a
 
 ### **PRD Alignment**: Phase 1 MVP - "Functional Workbook Page that correctly embeds the Sigma viz"
 
-### **Current State**: Basic iframe embedding works for will.olson account
+### **Current State**: ✅ **BREAKTHROUGH** - Debug-embed page works perfectly with proper JWT configuration
+- **Working Pattern**: `isEmbedUser: false` for internal users
+- **Dual-Mode Testing**: JWT vs direct URL comparison working
+- **Real-Time Generation**: Live API integration successful
 
-### **Expedited Opportunity**: Leverage React Embed SDK for rich interactions
+### **Expedited Opportunity**: Replicate debug-embed success across all workbook pages + enhance with React SDK
+
+### **🚀 Critical Implementation Based on Debug-Embed Success**
+```typescript
+// Apply the WORKING debug-embed pattern to all workbook pages
+const workingJWTConfig = {
+  workbookPath: 'workbook/workbook-4osogXvjSNtZFo3DW2XYGs',
+  userEmail: 'test@example.com',
+  options: {
+    jwtOptions: {
+      sessionLength: 3600,
+      isEmbedUser: false  // ✅ KEY SUCCESS FACTOR
+    }
+  }
+};
+
+// Universal Workbook Component with Debug-Embed Pattern
+function UniversalWorkbookEmbed({ workbookId, userEmail, showDebugMode = false }) {
+  const [embedURL, setEmbedURL] = useState('');
+  const [directURL, setDirectURL] = useState(`https://app.sigmacomputing.com/playground/workbook/${workbookId}`);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const generateEmbedURL = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch('/api/v1/sigma/embed', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          workbookPath: `workbook/${workbookId}`,
+          userEmail,
+          options: {
+            jwtOptions: {
+              sessionLength: 3600,
+              isEmbedUser: userEmail.endsWith('@sigmacomputing.com') ? false : true
+            }
+          }
+        })
+      });
+      
+      const data = await response.json();
+      if (data.success && data.embedURL) {
+        setEmbedURL(data.embedURL);
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="workbook-embed">
+      {showDebugMode && (
+        <div className="debug-controls">
+          <Button onClick={generateEmbedURL} disabled={isLoading}>
+            {isLoading ? 'Generating...' : 'Generate JWT Embed'}
+          </Button>
+          {error && <div className="error">{error}</div>}
+        </div>
+      )}
+      
+      <div className="embed-comparison">
+        {embedURL && (
+          <div className="jwt-embed">
+            <h3>JWT-Authenticated Embed</h3>
+            <iframe src={embedURL} width="100%" height="600" />
+          </div>
+        )}
+        
+        <div className="direct-embed">
+          <h3>Direct URL Embed</h3>
+          <iframe src={directURL} width="100%" height="600" />
+        </div>
+      </div>
+    </div>
+  );
+}
+```
 
 **Key Resources**:
 - `@external/embed-sdk/packages/react-embed-sdk/` - Full React SDK with hooks
@@ -101,7 +195,78 @@ function EnhancedSigmaEmbed({ workbookPath, userEmail, title, width, height }) {
 
 ### **PRD Alignment**: Phase 1 MVP - "User Accounts & Profiles" + Phase 2 - "Community Engagement"
 
-### **Current State**: Basic JWT authentication with internal/external user distinction
+### **Current State**: ✅ **BREAKTHROUGH** - Debug-embed page reveals critical JWT configuration patterns
+- **Working Pattern**: Proper `isEmbedUser` detection based on email domain
+- **Authentication Success**: Real 2FA integration working seamlessly
+- **User Type Detection**: Internal vs external user handling proven
+
+### **🚀 Critical Implementation Based on Debug-Embed Success**
+```typescript
+// Apply debug-embed authentication patterns to user management
+const userTypeDetection = {
+  isInternalUser: (email: string) => email.endsWith('@sigmacomputing.com'),
+  
+  getJWTConfig: (email: string) => ({
+    sessionLength: 3600,
+    isEmbedUser: !email.endsWith('@sigmacomputing.com'),
+    ...(email.endsWith('@sigmacomputing.com') ? {} : {
+      accountType: 'viewer',
+      teams: ['test-team']
+    })
+  })
+};
+
+// Universal User Management with Debug-Embed Pattern
+function UserManagementDebug({ userId, showDebugMode = false }) {
+  const [user, setUser] = useState(null);
+  const [jwtConfig, setJwtConfig] = useState(null);
+  const [embedTest, setEmbedTest] = useState(null);
+
+  const testUserEmbed = async (userEmail: string) => {
+    const config = userTypeDetection.getJWTConfig(userEmail);
+    const response = await fetch('/api/v1/sigma/embed', {
+      method: 'POST',
+      body: JSON.stringify({
+        workbookPath: 'workbook/test-workbook',
+        userEmail,
+        options: { jwtOptions: config }
+      })
+    });
+    
+    const data = await response.json();
+    setEmbedTest({
+      success: data.success,
+      embedURL: data.embedURL,
+      config
+    });
+  };
+
+  return (
+    <div className="user-management-debug">
+      {showDebugMode && (
+        <div className="debug-panel">
+          <h3>User Authentication Debug</h3>
+          <div className="user-info">
+            <p>Email: {user?.email}</p>
+            <p>Type: {userTypeDetection.isInternalUser(user?.email) ? 'Internal' : 'External'}</p>
+            <p>JWT Config: {JSON.stringify(jwtConfig, null, 2)}</p>
+          </div>
+          <Button onClick={() => testUserEmbed(user?.email)}>
+            Test User Embed
+          </Button>
+          {embedTest && (
+            <div className="embed-test-result">
+              <h4>Embed Test Result</h4>
+              <p>Success: {embedTest.success ? '✅' : '❌'}</p>
+              <p>URL: {embedTest.embedURL}</p>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+```
 
 ### **Expedited Opportunity**: Leverage Sigma's built-in user management APIs
 
@@ -212,7 +377,95 @@ function UserProfile({ userId }) {
 
 ### **PRD Alignment**: Phase 1 MVP - "Homepage displaying a grid of workbooks" + Phase 2 - "Administrative Curation"
 
-### **Current State**: Static workbook display
+### **Current State**: ✅ **BREAKTHROUGH** - Debug-embed page provides working embed generation pattern
+- **Working Pattern**: Real-time URL generation with proper JWT configuration
+- **Dual-Mode Testing**: Side-by-side comparison enables validation
+- **Error Handling**: Comprehensive debugging and error recovery
+
+### **🚀 Critical Implementation Based on Debug-Embed Success**
+```typescript
+// Apply debug-embed pattern to workbook discovery
+const workbookDiscoveryDebug = {
+  generateWorkbookPreview: async (workbookId: string, userEmail: string) => {
+    const config = userTypeDetection.getJWTConfig(userEmail);
+    const response = await fetch('/api/v1/sigma/embed', {
+      method: 'POST',
+      body: JSON.stringify({
+        workbookPath: `workbook/${workbookId}`,
+        userEmail,
+        options: { 
+          jwtOptions: config,
+          hideMenu: true,
+          hideBookmarks: true,
+          responsiveHeight: true
+        }
+      })
+    });
+    
+    return response.json();
+  },
+  
+  testWorkbookAccess: async (workbookId: string, userEmail: string) => {
+    const [jwtResult, directResult] = await Promise.all([
+      this.generateWorkbookPreview(workbookId, userEmail),
+      this.testDirectAccess(workbookId)
+    ]);
+    
+    return {
+      jwt: jwtResult,
+      direct: directResult,
+      comparison: this.compareResults(jwtResult, directResult)
+    };
+  }
+};
+
+// Workbook Discovery with Debug-Embed Pattern
+function WorkbookDiscoveryDebug({ workbooks, userEmail, showDebugMode = false }) {
+  const [testResults, setTestResults] = useState({});
+  
+  const testAllWorkbooks = async () => {
+    const results = {};
+    for (const workbook of workbooks) {
+      results[workbook.id] = await workbookDiscoveryDebug.testWorkbookAccess(
+        workbook.id, 
+        userEmail
+      );
+    }
+    setTestResults(results);
+  };
+
+  return (
+    <div className="workbook-discovery">
+      {showDebugMode && (
+        <div className="debug-panel">
+          <Button onClick={testAllWorkbooks}>
+            Test All Workbook Access
+          </Button>
+          <div className="test-results">
+            {Object.entries(testResults).map(([id, result]) => (
+              <div key={id} className="workbook-test">
+                <h4>Workbook {id}</h4>
+                <p>JWT Success: {result.jwt.success ? '✅' : '❌'}</p>
+                <p>Direct Success: {result.direct.success ? '✅' : '❌'}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+      
+      <div className="workbook-grid">
+        {workbooks.map(workbook => (
+          <WorkbookCard 
+            key={workbook.id} 
+            workbook={workbook}
+            onPreview={() => workbookDiscoveryDebug.generateWorkbookPreview(workbook.id, userEmail)}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+```
 
 ### **Expedited Opportunity**: Use Sigma API for dynamic workbook fetching and metadata
 
@@ -362,7 +615,109 @@ function HomePage() {
 
 ### **PRD Alignment**: Phase 1 MVP - "Share workbook" + Phase 2 - "Community Engagement"
 
-### **Current State**: Basic workbook sharing
+### **Current State**: ✅ **BREAKTHROUGH** - Debug-embed page provides working sharing patterns
+- **Working Pattern**: JWT-based secure sharing with proper authentication
+- **Dual-Mode Testing**: Secure vs public sharing comparison
+- **Real-Time Generation**: Live sharing URL generation with immediate feedback
+
+### **🚀 Critical Implementation Based on Debug-Embed Success**
+```typescript
+// Apply debug-embed pattern to sharing features
+const sharingDebug = {
+  generateShareURL: async (workbookId: string, userEmail: string, shareType: 'public' | 'private') => {
+    const config = userTypeDetection.getJWTConfig(userEmail);
+    
+    if (shareType === 'public') {
+      // Direct URL sharing (like debug-embed direct mode)
+      return `https://app.sigmacomputing.com/playground/workbook/${workbookId}?:link_source=share`;
+    } else {
+      // JWT-based secure sharing (like debug-embed JWT mode)
+      const response = await fetch('/api/v1/sigma/embed', {
+        method: 'POST',
+        body: JSON.stringify({
+          workbookPath: `workbook/${workbookId}`,
+          userEmail,
+          options: { 
+            jwtOptions: config,
+            hideMenu: false,
+            hideBookmarks: false
+          }
+        })
+      });
+      
+      const data = await response.json();
+      return data.embedURL;
+    }
+  },
+  
+  testSharingModes: async (workbookId: string, userEmail: string) => {
+    const [publicURL, privateURL] = await Promise.all([
+      this.generateShareURL(workbookId, userEmail, 'public'),
+      this.generateShareURL(workbookId, userEmail, 'private')
+    ]);
+    
+    return {
+      public: { url: publicURL, type: 'Direct URL' },
+      private: { url: privateURL, type: 'JWT Authenticated' }
+    };
+  }
+};
+
+// Sharing Features with Debug-Embed Pattern
+function SharingDebug({ workbookId, userEmail, showDebugMode = false }) {
+  const [sharingModes, setSharingModes] = useState(null);
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  const testSharing = async () => {
+    setIsGenerating(true);
+    try {
+      const modes = await sharingDebug.testSharingModes(workbookId, userEmail);
+      setSharingModes(modes);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  return (
+    <div className="sharing-features">
+      {showDebugMode && (
+        <div className="debug-panel">
+          <Button onClick={testSharing} disabled={isGenerating}>
+            {isGenerating ? 'Testing...' : 'Test Sharing Modes'}
+          </Button>
+          
+          {sharingModes && (
+            <div className="sharing-comparison">
+              <div className="sharing-mode">
+                <h4>Public Sharing (Direct URL)</h4>
+                <p>Type: {sharingModes.public.type}</p>
+                <Input value={sharingModes.public.url} readOnly />
+                <iframe src={sharingModes.public.url} width="100%" height="300" />
+              </div>
+              
+              <div className="sharing-mode">
+                <h4>Private Sharing (JWT)</h4>
+                <p>Type: {sharingModes.private.type}</p>
+                <Input value={sharingModes.private.url} readOnly />
+                <iframe src={sharingModes.private.url} width="100%" height="300" />
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+      
+      <div className="sharing-controls">
+        <Button onClick={() => sharingDebug.generateShareURL(workbookId, userEmail, 'public')}>
+          Share Publicly
+        </Button>
+        <Button onClick={() => sharingDebug.generateShareURL(workbookId, userEmail, 'private')}>
+          Share Privately
+        </Button>
+      </div>
+    </div>
+  );
+}
+```
 
 ### **Expedited Opportunity**: Implement Sigma's advanced sharing and embedding features
 
@@ -670,7 +1025,122 @@ function ExportScheduler({ workbookId, onScheduleCreated }) {
 
 ### **PRD Alignment**: Phase 2 - "Administrative Curation" + Phase 3 - "Polish & Expansion"
 
-### **Current State**: Basic user interface
+### **Current State**: ✅ **BREAKTHROUGH** - Debug-embed page provides comprehensive admin debugging patterns
+- **Working Pattern**: Universal debug component with dual-mode testing
+- **Real-Time Monitoring**: Live API testing and validation
+- **Comprehensive Logging**: Full error handling and debugging information
+
+### **🚀 Critical Implementation Based on Debug-Embed Success**
+```typescript
+// Apply debug-embed pattern to admin dashboard
+const adminDashboardDebug = {
+  testAllFeatures: async (userEmail: string) => {
+    const features = [
+      'workbook-embedding',
+      'user-management', 
+      'workbook-discovery',
+      'sharing-features',
+      'analytics'
+    ];
+    
+    const results = {};
+    for (const feature of features) {
+      results[feature] = await this.testFeature(feature, userEmail);
+    }
+    
+    return results;
+  },
+  
+  testFeature: async (feature: string, userEmail: string) => {
+    const config = userTypeDetection.getJWTConfig(userEmail);
+    
+    switch (feature) {
+      case 'workbook-embedding':
+        return this.testWorkbookEmbedding(userEmail, config);
+      case 'user-management':
+        return this.testUserManagement(userEmail, config);
+      case 'workbook-discovery':
+        return this.testWorkbookDiscovery(userEmail, config);
+      case 'sharing-features':
+        return this.testSharingFeatures(userEmail, config);
+      case 'analytics':
+        return this.testAnalytics(userEmail, config);
+      default:
+        return { success: false, error: 'Unknown feature' };
+    }
+  }
+};
+
+// Admin Dashboard with Debug-Embed Pattern
+function AdminDashboardDebug({ userEmail, showDebugMode = true }) {
+  const [systemStatus, setSystemStatus] = useState(null);
+  const [isTesting, setIsTesting] = useState(false);
+
+  const runSystemTest = async () => {
+    setIsTesting(true);
+    try {
+      const results = await adminDashboardDebug.testAllFeatures(userEmail);
+      setSystemStatus(results);
+    } finally {
+      setIsTesting(false);
+    }
+  };
+
+  return (
+    <div className="admin-dashboard">
+      <h1>Admin Dashboard</h1>
+      
+      {showDebugMode && (
+        <div className="debug-panel">
+          <Button onClick={runSystemTest} disabled={isTesting}>
+            {isTesting ? 'Running Tests...' : 'Run System Test'}
+          </Button>
+          
+          {systemStatus && (
+            <div className="system-status">
+              <h3>System Status</h3>
+              {Object.entries(systemStatus).map(([feature, result]) => (
+                <div key={feature} className="feature-status">
+                  <h4>{feature.replace('-', ' ').toUpperCase()}</h4>
+                  <p>Status: {result.success ? '✅ Working' : '❌ Failed'}</p>
+                  {result.error && <p>Error: {result.error}</p>}
+                  {result.embedURL && (
+                    <div className="embed-test">
+                      <p>Test URL: {result.embedURL}</p>
+                      <iframe src={result.embedURL} width="100%" height="200" />
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+      
+      <div className="admin-controls">
+        <div className="control-section">
+          <h3>User Management</h3>
+          <UserManagementDebug userId="admin" showDebugMode={showDebugMode} />
+        </div>
+        
+        <div className="control-section">
+          <h3>Workbook Management</h3>
+          <WorkbookDiscoveryDebug workbooks={[]} userEmail={userEmail} showDebugMode={showDebugMode} />
+        </div>
+        
+        <div className="control-section">
+          <h3>System Monitoring</h3>
+          <div className="monitoring-panel">
+            <p>JWT Configuration: {JSON.stringify(userTypeDetection.getJWTConfig(userEmail), null, 2)}</p>
+            <p>User Type: {userTypeDetection.isInternalUser(userEmail) ? 'Internal' : 'External'}</p>
+            <p>Last Test: {new Date().toISOString()}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+```
 
 ### **Expedited Opportunity**: Build comprehensive admin and user dashboards
 
@@ -7051,4 +7521,53 @@ const cloudDebug = {
 
 ---
 
-**Next Action**: Begin with Advanced Workbook Interaction using React Embed SDK to transform the current basic embeds into rich, interactive experiences.
+## **🎯 UPDATED IMPLEMENTATION STRATEGY**
+
+### **✅ Critical Success Factors from Debug-Embed Analysis**
+
+All 5 key areas now incorporate the **proven patterns** from the successful debug-embed page:
+
+1. **🔐 JWT Configuration**: `isEmbedUser: false` for internal users is critical
+2. **🔄 Dual-Mode Testing**: Side-by-side JWT vs direct URL comparison
+3. **⚡ Real-Time Generation**: Live API integration with immediate feedback
+4. **🛠️ Debug Interface**: Developer-friendly debugging accelerates development
+5. **📊 Visual Comparison**: Side-by-side validation catches issues immediately
+
+### **🚀 Implementation Priority Matrix**
+
+| Key Area | Debug-Embed Integration | Priority | Implementation Time |
+|----------|------------------------|----------|-------------------|
+| **1. Advanced Workbook Interaction** | ✅ Universal debug component | **HIGH** | Week 1 |
+| **2. User Management & Access Control** | ✅ JWT configuration patterns | **HIGH** | Week 1-2 |
+| **3. Dynamic Workbook Discovery** | ✅ Real-time testing patterns | **MEDIUM** | Week 2 |
+| **4. Advanced Embedding & Sharing** | ✅ Dual-mode sharing patterns | **MEDIUM** | Week 2-3 |
+| **5. Interactive Dashboard & Admin** | ✅ Comprehensive debug patterns | **LOW** | Week 3-4 |
+
+### **🎯 Immediate Next Steps (Updated)**
+
+1. **Fix Standalone Workbook Pages** - Apply debug-embed JWT configuration immediately
+2. **Create UniversalDebugComponent** - Extract working pattern from debug-embed
+3. **Implement Key Area 1** - Advanced workbook interaction with debug-embed pattern
+4. **Implement Key Area 2** - User management with proven JWT configuration
+5. **Add Debug Mode to All Features** - Enable debugging across all key areas
+6. **Implement Key Areas 3-5** - Using debug-embed patterns for validation
+7. **Integrate External Repositories** - Enhance with sqlparser-rs, stitches, etc.
+8. **Add Performance Monitoring** - Real-time metrics and alerting
+9. **Implement Advanced Features** - Collaboration, multi-data-source, cloud
+10. **Production Deployment** - Scale with proven patterns
+
+### **💡 Key Insight**
+
+The debug-embed page success **fundamentally changes** the implementation strategy. Instead of building features from scratch, we now have:
+
+- **Proven JWT configuration** that works
+- **Working authentication patterns** for all user types
+- **Dual-mode testing architecture** for validation
+- **Real-time generation patterns** for all features
+- **Comprehensive debugging infrastructure** for rapid development
+
+This transforms the 5 key areas from theoretical concepts into **practical implementation plans** based on working code.
+
+---
+
+**Next Action**: Begin with fixing standalone workbook pages using the proven debug-embed JWT configuration, then build the UniversalDebugComponent to replicate this success across all features.
