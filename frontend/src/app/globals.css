@@ -1,0 +1,678 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap');
+@import "tailwindcss";
+
+:root {
+  /* Sigma Official Brand Colors - From sigmaCSS.md */
+  --sigma-green: #4CAF50;
+  --sigma-green-light: #A7F3D0;
+  --sigma-green-dark: #2E7D32;
+  
+  /* Sigma Official Color Variables - Exact from sigmaCSS.md */
+  --shadow: #292929;           /* Primary text color */
+  --shadow-lite: #3d3d3d;      /* Secondary text color */
+  --insight: #f0ff45;          /* Highlight color */
+  --stratus: #9fa8a7;          /* Muted text */
+  --nimbus: #f0f0f0;           /* Light background */
+  
+  /* Sigma Primary Brand Colors */
+  --primary-blue: #4245ff;     /* Main brand color */
+  --primary-blue-lite: #6690ff; /* Light variant */
+  --grass: #4cec8c;            /* Accent green */
+  --sky: #a8e8f3;              /* Light blue accent */
+  --sun: #ff9a74;              /* Orange accent */
+  --meadow: #ffcee6;           /* Pink accent */
+  
+  /* Extended Color Palette */
+  --teal-brand: #2fb2af;
+  --teal-light: #82d1cf;
+  --teal-lightest: #d5f0ef;
+  --coral-brand: #ed5e4f;
+  --coral-light: #fb9f95;
+  --coral-lightest: #fedfdc;
+  --clay-brand: #c68173;
+  --clay-light: #ebc0b5;
+  --clay-lightest: #f8eae6;
+  --peach-brand: #fdcfb6;
+  --peach-light: #fee2d3;
+  --peach-lightest: #fff5f0;
+  --lilac-brand: #c9c7f5;
+  --lilac-light: #dfddf9;
+  --lilac-lightest: #f4f4fd;
+  --eggplant-brand: #964f7d;
+  --eggplant-light: #c095b1;
+  --eggplant-lightest: #eadce5;
+  
+  /* Sigma Official Neutral Scale - Exact from sigmaCSS_inspect.md */
+  --neutral-0: #FFFFFF;        /* white */
+  --neutral-1: #FCFCFC;        /* neutral-1 */
+  --neutral-3: #F8F8F8;        /* neutral-3 */
+  --neutral-4: #F3F3F3;        /* neutral-4 */
+  --neutral-5: #E8E8E8;        /* neutral-5 */
+  --neutral-6: #E2E2E2;        /* neutral-6 */
+  --neutral-7: #DBDBDB;        /* neutral-7 */
+  --neutral-8: #C7C7C7;        /* neutral-8 */
+  --neutral-9: #8F8F8F;        /* neutral-9 */
+  --neutral-10: #858585;       /* neutral-10 */
+  --neutral-11: #3D3D3D;       /* neutral-11 */
+  --neutral-12: #171717;       /* neutral-12 (black) */
+  
+  /* Background Colors using Sigma's system */
+  --background-dark: #171717;    /* neutral-12 */
+  --background-light: #F8F8F8;   /* neutral-3 */
+  --background-card: #FFFFFF;    /* neutral-0 */
+  
+  /* Text Colors using Sigma's exact values */
+  --text-primary: #292929;       /* --shadow (Sigma's primary text color) */
+  --text-secondary: #3D3D3D;     /* --shadow-lite */
+  --text-tertiary: #8F8F8F;      /* neutral-9 */
+  --text-light: #FFFFFF;         /* neutral-0 */
+  --text-muted: #C7C7C7;         /* neutral-8 */
+  
+  /* Border Colors */
+  --border-light: #E2E2E2;       /* neutral-6 */
+  --border-medium: #C7C7C7;      /* neutral-8 */
+  --border-dark: #3D3D3D;        /* neutral-11 */
+  
+  /* Placeholder text - much darker for better visibility */
+  --placeholder-primary: #3D3D3D;   /* neutral-11 - much darker */
+  --placeholder-secondary: #8F8F8F; /* neutral-9 */
+  
+  /* Legacy CSS Variables for UI Components - Updated for better contrast */
+  --background: #ffffff;
+  --foreground: #292929;  /* Use Sigma's primary text color */
+  --card: #ffffff;
+  --card-foreground: #292929;  /* Use Sigma's primary text color */
+  --popover: #ffffff;
+  --popover-foreground: #292929;  /* Use Sigma's primary text color */
+  --primary: #4CAF50;  /* Use Sigma green for primary */
+  --primary-foreground: #ffffff;
+  --secondary: #f8f8f8;  /* Use Sigma's neutral-3 */
+  --secondary-foreground: #292929;  /* Use Sigma's primary text color */
+  --muted: #f8f8f8;  /* Use Sigma's neutral-3 */
+  --muted-foreground: #3d3d3d;  /* Use Sigma's secondary text color */
+  --accent: #f8f8f8;  /* Use Sigma's neutral-3 */
+  --accent-foreground: #292929;  /* Use Sigma's primary text color */
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #e2e2e2;  /* Use Sigma's border-light */
+  --input: #e2e2e2;  /* Use Sigma's border-light */
+  --ring: #4CAF50;  /* Use Sigma green for focus ring */
+  --radius: 0.5rem;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+    --card: #0a0a0a;
+    --card-foreground: #ededed;
+    --popover: #0a0a0a;
+    --popover-foreground: #ededed;
+    --primary: #ededed;
+    --primary-foreground: #0a0a0a;
+    --secondary: #262626;
+    --secondary-foreground: #ededed;
+    --muted: #262626;
+    --muted-foreground: #a1a1aa;
+    --accent: #262626;
+    --accent-foreground: #ededed;
+    --destructive: #ef4444;
+    --destructive-foreground: #fafafa;
+    --border: #262626;
+    --input: #262626;
+    --ring: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: 'DM Sans', Inter, system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.5rem;
+}
+
+/* Sigma Typography System - Based on sigmaCSS.md */
+h1 {
+  color: var(--shadow);
+  letter-spacing: -0.05em;
+  text-wrap: pretty;
+  margin-top: 0;
+  margin-bottom: 1rem;
+  padding-bottom: 0;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 3rem;
+  font-weight: 500;
+  line-height: 3.3rem;
+}
+
+h2, h3 {
+  letter-spacing: -0.05em;
+  text-wrap: pretty;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 500;
+  line-height: 2.9rem;
+}
+
+h4 {
+  letter-spacing: -0.05em;
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 500;
+  line-height: 1.8rem;
+}
+
+h5 {
+  letter-spacing: -0.05em;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.5rem;
+}
+
+h6 {
+  margin-top: 0;
+  margin-bottom: 0.25rem;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 18px;
+}
+
+p {
+  text-wrap: pretty;
+  margin-bottom: 1rem;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1.125rem;
+  line-height: 140%;
+}
+
+/* Input and Form Styling with Proper Contrast */
+input::placeholder,
+textarea::placeholder {
+  color: var(--placeholder-primary) !important;
+  opacity: 1;
+}
+
+input:focus::placeholder,
+textarea:focus::placeholder {
+  color: var(--placeholder-secondary) !important;
+}
+
+/* Ensure all inputs have proper text contrast */
+input,
+textarea,
+select {
+  color: var(--shadow) !important;
+}
+
+/* Fix for light text on light backgrounds */
+.text-contrast-fix {
+  color: var(--shadow) !important;
+}
+
+/* Placeholder text in search inputs */
+.search-input::placeholder {
+  color: var(--placeholder-primary) !important;
+}
+
+/* Dropdown/Select text contrast */
+select option {
+  color: var(--shadow) !important;
+  background-color: var(--background-card) !important;
+}
+
+/* Fix white text on light backgrounds - Force dark text */
+.text-white-on-light {
+  color: var(--text-primary) !important;
+}
+
+/* Fix helper text contrast */
+.text-gray-500,
+.text-muted-foreground {
+  color: var(--text-secondary) !important;
+}
+
+/* Fix button text contrast */
+button:not(.bg-sigma-green):not(.bg-background-dark) {
+  color: var(--text-primary) !important;
+}
+
+/* Fix switch/toggle contrast */
+[role="switch"] {
+  color: var(--text-primary) !important;
+}
+
+/* Fix form labels and helper text */
+label,
+.form-label {
+  color: var(--text-primary) !important;
+}
+
+/* Fix placeholder text in all inputs */
+input::placeholder,
+textarea::placeholder,
+select::placeholder {
+  color: var(--text-tertiary) !important;
+  opacity: 1;
+}
+
+/* Ensure all text elements have proper contrast */
+p, span, div, h1, h2, h3, h4, h5, h6 {
+  color: inherit;
+}
+
+/* Fix specific white text issues */
+.text-white:not(.bg-sigma-green):not(.bg-background-dark) {
+  color: var(--text-primary) !important;
+}
+
+/* Comprehensive white text fixes based on Sigma CSS variables */
+/* Force all text to use proper Sigma colors */
+* {
+  color: inherit;
+}
+
+/* Override any white text on light backgrounds */
+.text-white,
+.text-gray-100,
+.text-gray-200,
+.text-gray-300,
+.text-gray-400,
+.text-gray-500 {
+  color: var(--shadow) !important;
+}
+
+/* Fix specific elements that commonly have white text issues */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--shadow) !important;
+}
+
+p, span, div, label, button {
+  color: var(--shadow) !important;
+}
+
+/* Fix form elements */
+input, textarea, select {
+  color: var(--shadow) !important;
+}
+
+input::placeholder,
+textarea::placeholder,
+select::placeholder {
+  color: var(--shadow-lite) !important;
+  opacity: 1;
+}
+
+/* Fix button text */
+button:not(.bg-sigma-green):not(.bg-background-dark) {
+  color: var(--shadow) !important;
+}
+
+/* Fix navigation text - but preserve white text on dark backgrounds */
+nav:not(.bg-white):not(.bg-gray-50):not(.bg-gray-100) a, 
+nav:not(.bg-white):not(.bg-gray-50):not(.bg-gray-100) button {
+  color: var(--text-light) !important;
+}
+
+/* Only apply dark text to light navigation backgrounds */
+nav.bg-white a, nav.bg-white button,
+nav.bg-gray-50 a, nav.bg-gray-50 button,
+nav.bg-gray-100 a, nav.bg-gray-100 button {
+  color: var(--shadow) !important;
+}
+
+/* Fix card content */
+.card-content,
+.card-title,
+.card-description {
+  color: var(--shadow) !important;
+}
+
+/* Fix specific problematic classes */
+.text-gray-600,
+.text-gray-700,
+.text-gray-800,
+.text-gray-900 {
+  color: var(--shadow) !important;
+}
+
+/* Fix light text on light backgrounds */
+.bg-white .text-white,
+.bg-gray-50 .text-white,
+.bg-gray-100 .text-white {
+  color: var(--shadow) !important;
+}
+
+/* Fix placeholder text visibility */
+::placeholder {
+  color: var(--shadow-lite) !important;
+  opacity: 1;
+}
+
+/* Fix helper text */
+.text-muted,
+.text-gray-500,
+.text-gray-400 {
+  color: var(--shadow-lite) !important;
+}
+
+/* Fix switch labels */
+[role="switch"] + label {
+  color: var(--shadow) !important;
+}
+
+/* Fix select options */
+select option {
+  color: var(--shadow) !important;
+  background-color: var(--neutral-0) !important;
+}
+
+/* Fix dropdown content */
+[data-radix-popper-content-wrapper] {
+  color: var(--shadow) !important;
+}
+
+/* Fix any remaining white text issues */
+.text-white:not(.bg-sigma-green):not(.bg-background-dark):not(.bg-neutral-12) {
+  color: var(--shadow) !important;
+}
+
+/* Sigma Button Patterns - Based on sigmaCSS.md */
+.button-primary {
+  border: 2px solid var(--primary-blue);
+  background-color: var(--primary-blue);
+  color: var(--neutral-0);
+  text-align: center;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 4px;
+  padding: 12px 16px;
+  font-size: 0.6875rem;
+  font-weight: 900;
+  line-height: 150%;
+  transition: color 0.2s, background-color 0.2s, border-color 0.2s;
+  display: block;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.button-primary:hover {
+  background-color: #0004e1;
+  border-color: transparent;
+}
+
+.button-primary:active {
+  background-color: #0003a1;
+  border-color: #9c0f01;
+}
+
+.button-primary:focus-visible {
+  outline-offset: 2px;
+  outline: 2px solid #4245ff;
+}
+
+.button-secondary {
+  border: 2px solid var(--neutral-12);
+  color: var(--neutral-12);
+  text-align: center;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background-color: transparent;
+  border-radius: 4px;
+  padding: 12px 16px;
+  font-size: 0.6875rem;
+  font-weight: 900;
+  line-height: 150%;
+  transition: color 0.2s, background-color 0.2s, border-color 0.2s;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.button-secondary:hover {
+  border-color: var(--neutral-12);
+  color: #1c1c1c;
+  background-color: #1717170f;
+}
+
+.button-secondary:active {
+  background-color: #1717171f;
+}
+
+.button-secondary:focus-visible {
+  outline-offset: 2px;
+  outline: 2px solid #4245ff;
+}
+
+.button-ghost {
+  color: var(--primary-blue);
+  text-align: center;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background-color: transparent;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  padding: 12px 16px;
+  font-size: 0.6875rem;
+  font-weight: 900;
+  line-height: 150%;
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.button-ghost:hover {
+  background-color: #1717170f;
+  border-color: #17171700;
+}
+
+.button-ghost:active {
+  border-color: var(--neutral-6);
+  background-color: #1717171f;
+}
+
+/* Sigma Special Button - Yellow with dark text */
+.button-sigma {
+  border: 1px solid var(--shadow);
+  color: var(--shadow);
+  text-align: center;
+  white-space: nowrap;
+  background-color: var(--insight);
+  border-radius: 8rem;
+  padding: 0.65rem 1.5rem;
+  font-family: 'DM Mono', sans-serif;
+  font-weight: 400;
+  transition: all 0.275s, all 0.2s;
+  position: static;
+}
+
+.button-sigma:hover {
+  background-color: var(--neutral-0);
+}
+
+/* Sigma Spacing System - Based on sigmaCSS.md */
+.spacer-tiny { width: 100%; padding-top: 0.125rem; }
+.spacer-xxsmall { width: 100%; padding-top: 0.25rem; }
+.spacer-xsmall { width: 100%; padding-top: 0.5rem; }
+.spacer-small { width: 100%; padding-top: 1rem; }
+.spacer-medium { width: 100%; padding-top: 2rem; }
+.spacer-large { width: 100%; padding-top: 3rem; }
+.spacer-huge { width: 100%; padding-top: 6rem; }
+.spacer-xhuge { width: 100%; padding-top: 8rem; }
+.spacer-xxlarge { width: 100%; padding-top: 5rem; }
+
+/* Sigma Padding System */
+.padding-tiny { padding: 0.125rem; }
+.padding-xxsmall { padding: 0.25rem; }
+.padding-xsmall { padding: 0.5rem; }
+.padding-small { padding: 1rem; }
+.padding-medium { padding: 2rem; }
+.padding-large { padding: 3rem; }
+.padding-huge { padding: 6rem; }
+.padding-xhuge { padding: 8rem; }
+.padding-xxlarge { padding: 5rem; }
+
+/* Sigma Margin System */
+.margin-tiny { margin: 0.125rem; }
+.margin-xxsmall { margin: 0.25rem; }
+.margin-xsmall { margin: 0.5rem; }
+.margin-small { margin: 1rem; }
+.margin-medium { margin: 2rem; }
+.margin-large { margin: 3rem; }
+.margin-huge { margin: 6rem; }
+.margin-xhuge { margin: 8rem; }
+.margin-xxlarge { margin: 5rem; }
+
+/* Sigma Card Styles - Based on sigmaCSS.md */
+.card-sigma {
+  background-color: var(--neutral-0) !important;
+  border: 1px solid var(--neutral-6) !important;
+  border-radius: 4px !important;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  padding: 32px !important;
+  display: flex;
+}
+
+.card-sigma.neutral-3 {
+  background-color: var(--neutral-3) !important;
+}
+
+/* Force white background for workbook cards */
+.card-sigma {
+  background: white !important;
+  background-color: white !important;
+}
+
+/* Sigma Grid System */
+.grid-sigma {
+  grid-column-gap: 16px;
+  grid-row-gap: 16px;
+  grid-template-rows: auto auto;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-columns: 1fr;
+  display: grid;
+}
+
+.grid-sigma-3 {
+  grid-column-gap: 4rem;
+  grid-row-gap: 4rem;
+  grid-template-rows: auto;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-auto-columns: 1fr;
+  width: 100%;
+  display: grid;
+}
+
+.grid-sigma-4 {
+  grid-column-gap: 4rem;
+  grid-row-gap: 4rem;
+  grid-template-rows: auto;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-auto-columns: 1fr;
+  width: 100%;
+  display: grid;
+}
+
+/* Preserve white text in header/navigation areas */
+header,
+header a,
+header button,
+header nav,
+header nav a,
+header nav button,
+.bg-neutral-12,
+.bg-neutral-12 a,
+.bg-neutral-12 button,
+.bg-neutral-12 nav,
+.bg-neutral-12 nav a,
+.bg-neutral-12 nav button,
+.bg-background-dark,
+.bg-background-dark a,
+.bg-background-dark button,
+.bg-background-dark nav,
+.bg-background-dark nav a,
+.bg-background-dark nav button {
+  color: var(--text-light) !important;
+}
+
+/* Specific header navigation preservation */
+header .text-white,
+header nav .text-white,
+.bg-neutral-12 .text-white,
+.bg-background-dark .text-white,
+.bg-background-dark .text-text-light {
+  color: var(--text-light) !important;
+}
+
+/* Override any dark text rules for dark backgrounds */
+.bg-background-dark *:not(.bg-white):not(.bg-gray-50):not(.bg-gray-100) {
+  color: var(--text-light) !important;
+}
+
+/* Image Rendering Optimizations for Sharp Logos */
+img {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+/* Specific optimizations for Next.js Image components */
+.next-image-wrapper img {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+/* High DPI display optimizations */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  img {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+}
+
+/* Logo-specific optimizations */
+.logo-container {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  -webkit-transform: translateZ(0);
+}
+
+.logo-container img {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  -webkit-transform: translateZ(0);
+}
