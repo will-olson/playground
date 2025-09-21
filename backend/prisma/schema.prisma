@@ -56,6 +56,7 @@ model Workbook {
   title               String
   description         String?
   sigma_embed_url     String
+  sigma_workbook_id   String?     // Sigma workbook ID for tracking
   thumbnail_url       String?
   is_publicly_visible Boolean     @default(true)
   allow_copy          Boolean     @default(true)

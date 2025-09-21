@@ -3,13 +3,21 @@ import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { PrismaService } from './prisma/prisma.service';
+import * as dotenv from 'dotenv';
+
+// Load environment variables
+dotenv.config();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // Enable CORS
   app.enableCors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+    origin: [
+      process.env.CORS_ORIGIN || 'http://localhost:3000',
+      'http://localhost:3002',
+      'http://localhost:3000'
+    ],
     credentials: true,
   });
 

@@ -59,7 +59,23 @@ export class AuthService {
   async login(loginDto: LoginDto): Promise<AuthTokens> {
     const { email, password } = loginDto;
 
-    // Find user by email
+    console.log('Login attempt for:', email);
+
+    // First try Sigma authentication
+    try {
+      console.log('Attempting Sigma authentication...');
+      const sigmaTokens = await this.authenticateSigmaUser(email, password);
+      if (sigmaTokens) {
+        console.log('Sigma authentication successful');
+        return sigmaTokens;
+      }
+      console.log('Sigma authentication returned null');
+    } catch (error) {
+      // If Sigma auth fails, continue to local auth
+      console.log('Sigma authentication failed, trying local auth:', error.message);
+    }
+
+    // Fall back to local authentication
     const user = await this.prisma.user.findUnique({
       where: { email },
     });
@@ -147,6 +163,52 @@ export class AuthService {
     }
   }
 
+  async demoLogin(): Promise<AuthTokens> {
+    // Use Sigma test credentials for demo login
+    const email = process.env.SIGMA_TEST_EMAIL_1;
+    const password = process.env.SIGMA_TEST_PASSWORD;
+
+    console.log('Demo login - Environment variables:', {
+      email: email || 'undefined',
+      password: password ? '***' : 'undefined',
+      allEnv: Object.keys(process.env).filter(k => k.includes('SIGMA'))
+    });
+
+    if (!email || !password) {
+      throw new UnauthorizedException('Demo credentials not configured');
+    }
+
+    // Try Sigma authentication first
+    try {
+      const sigmaTokens = await this.authenticateSigmaUser(email, password);
+      if (sigmaTokens) {
+        return sigmaTokens;
+      }
+    } catch (error) {
+      console.log('Sigma demo authentication failed:', error.message);
+    }
+
+    // Fall back to finding existing user
+    const user = await this.prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException('Demo user not found');
+    }
+
+    // Update last login
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: { last_login_at: new Date() },
+    });
+
+    // Generate tokens
+    const tokens = await this.generateTokens(user);
+
+    return tokens;
+  }
+
   async validateUser(userId: string): Promise<AuthUser | null> {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
@@ -164,6 +226,74 @@ export class AuthService {
       return null;
     }
 
+    return user;
+  }
+
+  async authenticateSigmaUser(email: string, password: string): Promise<AuthTokens | null> {
+    // Validate against Sigma test credentials
+    const validCredentials = this.validateSigmaTestCredentials(email, password);
+    
+    if (!validCredentials) {
+      return null;
+    }
+
+    // Check if user exists in our database
+    let user = await this.prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      // Create user profile on first login
+      user = await this.createUserFromSigmaInfo(email, password);
+    } else {
+      // Update last login
+      await this.prisma.user.update({
+        where: { id: user.id },
+        data: { last_login_at: new Date() },
+      });
+    }
+
+    // Generate tokens
+    return this.generateTokens(user);
+  }
+
+  private validateSigmaTestCredentials(email: string, password: string): boolean {
+    const testCredentials = [
+      { email: process.env.SIGMA_TEST_EMAIL_1, password: process.env.SIGMA_TEST_PASSWORD },
+      { email: process.env.SIGMA_TEST_EMAIL_2, password: process.env.SIGMA_TEST_PASSWORD },
+      { email: process.env.SIGMA_TEST_EMAIL_3, password: process.env.SIGMA_TEST_PASSWORD },
+    ];
+
+    console.log('Validating Sigma credentials:', { email, password });
+    console.log('Test credentials:', testCredentials.map(c => ({ email: c.email, password: c.password ? '***' : 'undefined' })));
+
+    return testCredentials.some(cred => cred.email === email && cred.password === password);
+  }
+
+  private async createUserFromSigmaInfo(email: string, password: string): Promise<any> {
+    // Generate username from email
+    const username = email.split('@')[0];
+    
+    // Hash password
+    const password_hash = await bcrypt.hash(password, 10);
+
+    // Create user
+    const user = await this.prisma.user.create({
+      data: {
+        username,
+        email,
+        password_hash,
+        full_name: 'Will Olson', // From Sigma user info
+        bio: 'Sigma Computing user',
+        title: 'Developer',
+        organization: 'Sigma Computing',
+        is_verified: true,
+        is_active: true,
+        is_admin: false,
+      },
+    });
+
+    console.log(`Created Sigma user profile: ${user.username} (${user.email})`);
     return user;
   }
 
