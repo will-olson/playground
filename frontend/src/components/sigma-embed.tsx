@@ -64,6 +64,13 @@ export function SigmaEmbed({
       setIsLoading(true);
       setError(null);
 
+      // Guard clause to prevent requests with invalid parameters
+      if (!workbookPath || !userEmail) {
+        console.error('Invalid parameters:', { workbookPath, userEmail });
+        setError('Invalid parameters');
+        return;
+      }
+
       const requestBody = {
         workbookPath,
         userEmail,
@@ -74,6 +81,7 @@ export function SigmaEmbed({
       };
 
       console.log('Making embed request with body:', requestBody);
+      console.log('Request timestamp:', new Date().toISOString());
 
       const response = await fetch('http://localhost:3001/api/v1/sigma/embed', {
         method: 'POST',
@@ -88,6 +96,11 @@ export function SigmaEmbed({
 
       const data: EmbedResponse = await response.json();
       console.log('Response data:', data);
+
+      // Debug: Check if response is successful but data.success is false
+      if (response.ok && !data.success) {
+        console.error('Backend returned 200 but data.success is false:', data);
+      }
 
       if (data.success && data.embedURL) {
         console.log('Generated embed URL:', data.embedURL);
@@ -111,7 +124,7 @@ export function SigmaEmbed({
 
   useEffect(() => {
     generateEmbedURL();
-  }, [workbookPath, userEmail, JSON.stringify(options), JSON.stringify(jwtOptions)]);
+  }, [workbookPath, userEmail, options, jwtOptions]);
 
   if (isLoading || isRetrying) {
     return (

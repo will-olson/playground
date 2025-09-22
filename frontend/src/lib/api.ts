@@ -81,22 +81,33 @@ export const apiMethods = {
   },
 
   async register(userData: { email: string; password: string; full_name: string; username: string }) {
-    const response = await api.post('/auth/register', userData);
-    const { accessToken, refreshToken } = response.data;
-    
-    // Get user profile after successful registration
-    const profileResponse = await api.get('/auth/profile', {
-      headers: { Authorization: `Bearer ${accessToken}` }
-    });
-    
-    return {
-      success: true,
-      data: {
-        user: profileResponse.data,
-        accessToken,
-        refreshToken
+    try {
+      const response = await api.post('/auth/register', userData);
+      const { accessToken, refreshToken } = response.data;
+      
+      // Get user profile after successful registration
+      const profileResponse = await api.get('/auth/profile', {
+        headers: { Authorization: `Bearer ${accessToken}` }
+      });
+      
+      return {
+        success: true,
+        data: {
+          user: profileResponse.data,
+          accessToken,
+          refreshToken
+        }
+      };
+    } catch (error: any) {
+      // Handle specific error cases
+      if (error.response?.status === 409) {
+        throw new Error('Email already exists. Please use a different email or try logging in.');
+      } else if (error.response?.status === 400) {
+        throw new Error(error.response.data?.message || 'Invalid registration data. Please check your information.');
+      } else {
+        throw new Error(error.response?.data?.message || 'Registration failed. Please try again.');
       }
-    };
+    }
   },
 
   async logout() {

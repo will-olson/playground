@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { SigmaEmbed } from '@/components/sigma-embed';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -37,25 +37,30 @@ export default function TestEmbedPage() {
 
   const workbookPath = `workbook/${selectedWorkbook}`;
 
-  const embedOptions = {
+  // Determine if this is an internal user (existing Sigma account)
+  const isInternalUser = userEmail.endsWith('@sigmacomputing.com');
+  
+  const embedOptions = useMemo(() => ({
     hideBookmarks,
     hideMenu,
     responsiveHeight,
     theme,
     menuPosition: menuPosition as 'top' | 'bottom' | 'none',
-  };
-
-  // Determine if this is an internal user (existing Sigma account)
-  const isInternalUser = userEmail.endsWith('@sigmacomputing.com');
+  }), [hideBookmarks, hideMenu, responsiveHeight, theme, menuPosition]);
   
-  const jwtOptions = {
+  const teamsArray = useMemo(() => 
+    teams.split(',').map(t => t.trim()).filter(Boolean), 
+    [teams]
+  );
+
+  const jwtOptions = useMemo(() => ({
     sessionLength,
     isEmbedUser: !isInternalUser, // Internal users should not be treated as embed users
     ...(isInternalUser ? {} : {
       accountType,
-      teams: teams.split(',').map(t => t.trim()).filter(Boolean),
+      teams: teamsArray,
     }),
-  };
+  }), [sessionLength, isInternalUser, accountType, teamsArray]);
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">

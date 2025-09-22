@@ -28,7 +28,7 @@ export class EmbedURLService {
     userEmail: string,
     options: EmbedURLOptions = {}
   ): Promise<string> {
-    const baseUrl = this.configService.get<string>('SIGMA_BASE_URL', 'https://app.sigmacomputing.com');
+    const baseUrl = this.configService.get<string>('SIGMA_EMBED_BASE_URL', 'https://app.sigmacomputing.com');
     const orgSlug = this.configService.get<string>('SIGMA_ORG_SLUG');
     
     if (!orgSlug) {

@@ -77,12 +77,19 @@ export class SigmaJWTService {
     };
 
     // Add optional claims for embed users
+    // BREAKTHROUGH PATTERN: Use isEmbedUser: false for internal users to trigger real Sigma login
     if (options.isEmbedUser) {
       if (options.firstName) claims.first_name = options.firstName;
       if (options.lastName) claims.last_name = options.lastName;
       if (options.userAttributes) claims.user_attributes = options.userAttributes;
       if (options.accountType) claims.account_type = options.accountType;
       if (options.teams && options.teams.length > 0) claims.teams = options.teams;
+    } else {
+      // For internal users (isEmbedUser: false), we still include user info for enhanced experience
+      // This enables the breakthrough pattern where internal users get real Sigma login with 2FA
+      if (options.firstName) claims.first_name = options.firstName;
+      if (options.lastName) claims.last_name = options.lastName;
+      // Don't include accountType or teams for internal users - they use their real Sigma account
     }
 
     // Add connection tokens if provided (for ver 1.1)
@@ -112,16 +119,16 @@ export class SigmaJWTService {
   }
 
   private validateEmail(email: string): void {
-    // RFC-1035 compliant email validation
-    const emailRegex = /^[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?)*@[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?)*$/;
+    // Standard email validation - allow underscores in domain names
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     
     if (!emailRegex.test(email)) {
-      throw new Error('Invalid email format. Email must be RFC-1035 compliant and not contain spaces or underscores.');
+      throw new Error('Invalid email format. Please provide a valid email address.');
     }
 
-    // Check for invalid characters
-    if (email.includes(' ') || email.includes('_')) {
-      throw new Error('Email cannot contain spaces or underscores.');
+    // Only check for spaces (underscores are valid in email addresses)
+    if (email.includes(' ')) {
+      throw new Error('Email cannot contain spaces.');
     }
   }
 
