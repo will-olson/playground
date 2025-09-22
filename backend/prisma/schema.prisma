@@ -40,14 +40,23 @@ model User {
   updated_at        DateTime    @updatedAt
 
   // Relationships
-  workbooks         Workbook[]
+  workbooks         Workbook[]  @relation("WorkbookOwner")
+  authored_workbooks Workbook[] @relation("WorkbookAuthor")
   favorites         Favorite[]
-  followers         Follow[]    @relation("Following")
-  following         Follow[]    @relation("Followers")
+  workbook_favorites WorkbookFavorite[]
+  workbook_shares   WorkbookShare[]
+  followers         UserFollow[]    @relation("Following")
+  following         UserFollow[]    @relation("Followers")
+  // Legacy Follow relations
+  legacy_followers  Follow[]    @relation("Followers")
+  legacy_following  Follow[]    @relation("Following")
   curated_features  FeaturedItem[]
   refresh_tokens    RefreshToken[]
   reports_made      Report[]    @relation("Reporter")
   reports_received  Report[]    @relation("ReportedUser")
+  export_schedules  ExportSchedule[]
+  activity_logs     ActivityLog[]
+  challenge_participations ChallengeParticipation[]
 
   // Indexes
   @@index([username])
@@ -59,37 +68,54 @@ model User {
 
 model Workbook {
   id                  String      @id @default(uuid())
-  title               String
+  name                String
+  title               String?     // Keep for backward compatibility
   description         String?
-  sigma_embed_url     String
+  sigma_embed_url     String?
   sigma_workbook_id   String?     // Sigma workbook ID for tracking
   thumbnail_url       String?
-  is_publicly_visible Boolean     @default(true)
+  is_public           Boolean     @default(true)
+  is_publicly_visible Boolean     @default(true) // Keep for backward compatibility
   allow_copy          Boolean     @default(true)
+  allow_comments      Boolean     @default(true)
+  allow_sharing       Boolean     @default(true)
   view_count          Int         @default(0)
   favorite_count      Int         @default(0)
   is_featured         Boolean     @default(false)
   featured_at         DateTime?
-  published_at        DateTime    @default(now())
+  status              WorkbookStatus @default(DRAFT)
+  published_at        DateTime?
   updated_at          DateTime    @updatedAt
+  created_at          DateTime    @default(now())
 
   // Foreign Keys
-  author_id           String
+  userId              String
+  author_id           String      // Keep for backward compatibility
+  templateId          String?
 
   // Relationships
-  author              User        @relation(fields: [author_id], references: [id], onDelete: Cascade)
+  user                User        @relation("WorkbookOwner", fields: [userId], references: [id], onDelete: Cascade)
+  author              User        @relation("WorkbookAuthor", fields: [author_id], references: [id], onDelete: Cascade)
+  template            WorkbookTemplate? @relation(fields: [templateId], references: [id])
   tags                WorkbookTag[]
   favorited_by        Favorite[]
   reports             Report[]    @relation("ReportedWorkbook")
   views               WorkbookView[]
+  favorites           WorkbookFavorite[]
+  shares              WorkbookShare[]
+  export_schedules    ExportSchedule[]
+  activity_logs       ActivityLog[]
 
   // Indexes
+  @@index([userId])
   @@index([author_id])
   @@index([published_at])
+  @@index([is_public])
   @@index([is_publicly_visible])
   @@index([is_featured])
   @@index([view_count])
   @@index([favorite_count])
+  @@index([status])
   @@map("workbooks")
 }
 
@@ -104,6 +130,7 @@ model Tag {
 
   // Relationships
   workbooks   WorkbookTag[]
+  templates   TemplateTag[]
 
   // Indexes
   @@index([name])
@@ -145,6 +172,23 @@ model Favorite {
   @@map("favorites")
 }
 
+model UserFollow {
+  follower_id  String
+  following_id String
+  followed_at  DateTime @default(now())
+
+  // Relationships
+  follower     User     @relation("Followers", fields: [follower_id], references: [id], onDelete: Cascade)
+  following    User     @relation("Following", fields: [following_id], references: [id], onDelete: Cascade)
+
+  @@id([follower_id, following_id])
+  @@index([follower_id])
+  @@index([following_id])
+  @@index([followed_at])
+  @@map("user_follows")
+}
+
+// Keep old Follow model for backward compatibility
 model Follow {
   follower_id  String
   following_id String
@@ -294,4 +338,171 @@ enum ReportStatus {
   IN_REVIEW
   RESOLVED
   DISMISSED
+}
+
+// ==============================================
+// NEW ENHANCED MODELS
+// ==============================================
+
+model WorkbookTemplate {
+  id            String   @id @default(uuid())
+  name          String
+  description   String?
+  category      String
+  thumbnail     String?
+  isPopular     Boolean  @default(false)
+  isPublic      Boolean  @default(true)
+  estimatedTime String?
+  difficulty    String?  // beginner, intermediate, advanced
+  usageCount    Int      @default(0)
+  createdBy     String?
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  // Relationships
+  workbooks     Workbook[]
+  tags          TemplateTag[]
+
+  @@index([category])
+  @@index([isPopular])
+  @@index([usageCount])
+  @@map("workbook_templates")
+}
+
+model TemplateTag {
+  templateId String
+  tagId      Int
+  created_at DateTime @default(now())
+
+  // Relationships
+  template   WorkbookTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  tag        Tag              @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([templateId, tagId])
+  @@index([tagId])
+  @@map("template_tags")
+}
+
+model WorkbookFavorite {
+  id          String   @id @default(uuid())
+  workbookId  String
+  userId      String
+  favoritedAt DateTime @default(now())
+
+  // Relationships
+  workbook    Workbook @relation(fields: [workbookId], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([workbookId, userId])
+  @@index([workbookId])
+  @@index([userId])
+  @@index([favoritedAt])
+  @@map("workbook_favorites")
+}
+
+model WorkbookShare {
+  id         String   @id @default(uuid())
+  workbookId String
+  userId     String
+  platform   String   // social media platform or sharing method
+  sharedAt   DateTime @default(now())
+
+  // Relationships
+  workbook   Workbook @relation(fields: [workbookId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([workbookId])
+  @@index([userId])
+  @@index([sharedAt])
+  @@map("workbook_shares")
+}
+
+model ExportSchedule {
+  id            String   @id @default(uuid())
+  name          String
+  frequency     String   // daily, weekly, monthly
+  format        String   // pdf, excel, csv
+  workbookId    String
+  userId        String
+  cronExpression String?
+  status        String   @default("active") // active, paused, completed
+  lastRun       DateTime?
+  nextRun       DateTime?
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  // Relationships
+  workbook      Workbook @relation(fields: [workbookId], references: [id], onDelete: Cascade)
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([workbookId])
+  @@index([status])
+  @@index([nextRun])
+  @@map("export_schedules")
+}
+
+model ActivityLog {
+  id            String   @id @default(uuid())
+  userId        String
+  type          String   // view, favorite, share, follow, workbook_created, etc.
+  workbookId    String?
+  targetUserId  String?
+  challengeId   String?
+  metadata      Json?
+  created_at    DateTime @default(now())
+
+  // Relationships
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workbook      Workbook? @relation(fields: [workbookId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([type])
+  @@index([workbookId])
+  @@index([created_at])
+  @@map("activity_logs")
+}
+
+model CommunityChallenge {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  startDate   DateTime
+  endDate     DateTime
+  prize       String?
+  status      String   @default("upcoming") // upcoming, active, completed
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  // Relationships
+  participants ChallengeParticipation[]
+
+  @@index([status])
+  @@index([startDate])
+  @@index([endDate])
+  @@map("community_challenges")
+}
+
+model ChallengeParticipation {
+  id          String   @id @default(uuid())
+  userId      String
+  challengeId String
+  joinedAt    DateTime @default(now())
+  status      String   @default("active") // active, completed, withdrawn
+
+  // Relationships
+  user        User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  challenge   CommunityChallenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, challengeId])
+  @@index([userId])
+  @@index([challengeId])
+  @@index([joinedAt])
+  @@map("challenge_participations")
+}
+
+enum WorkbookStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
 }

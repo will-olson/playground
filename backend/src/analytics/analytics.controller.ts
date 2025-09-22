@@ -1,21 +1,39 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, UseGuards, Request } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { AnalyticsService } from './analytics.service';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
-@ApiTags('analytics')
-@Controller('analytics')
+@Controller('api/v1/analytics')
 @UseGuards(JwtAuthGuard)
-@ApiBearerAuth()
 export class AnalyticsController {
   constructor(private readonly analyticsService: AnalyticsService) {}
 
-  @Get('overview')
-  @ApiOperation({ summary: 'Get analytics overview' })
-  @ApiResponse({ status: 200, description: 'Analytics overview retrieved successfully' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
-  async getOverview() {
-    return this.analyticsService.getOverview();
+  @Get('dashboard')
+  async getDashboardAnalytics(@Request() req) {
+    const userId = req.user.id;
+    return await this.analyticsService.getDashboardAnalytics(userId);
+  }
+
+  @Get('workbook/:workbookId')
+  async getWorkbookAnalytics(@Request() req, @Body('workbookId') workbookId: string) {
+    const userId = req.user.id;
+    return await this.analyticsService.getWorkbookAnalytics(userId, workbookId);
+  }
+
+  @Post('track-view')
+  async trackWorkbookView(@Request() req, @Body() body: { workbookId: string; userId?: string }) {
+    const userId = req.user.id;
+    return await this.analyticsService.trackWorkbookView(userId, body.workbookId, body.userId);
+  }
+
+  @Post('track-favorite')
+  async trackWorkbookFavorite(@Request() req, @Body() body: { workbookId: string; action: 'add' | 'remove' }) {
+    const userId = req.user.id;
+    return await this.analyticsService.trackWorkbookFavorite(userId, body.workbookId, body.action);
+  }
+
+  @Post('track-share')
+  async trackWorkbookShare(@Request() req, @Body() body: { workbookId: string; platform: string }) {
+    const userId = req.user.id;
+    return await this.analyticsService.trackWorkbookShare(userId, body.workbookId, body.platform);
   }
 }
-

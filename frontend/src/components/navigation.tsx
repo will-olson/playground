@@ -20,7 +20,7 @@ import {
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
   { name: 'Community', href: '/community', icon: BookOpenIcon },
-  { name: 'Create', href: '/workbooks/create', icon: PlusIcon },
+  { name: 'Create', href: '/create', icon: PlusIcon },
   { name: 'Import', href: '/onboarding', icon: Cog6ToothIcon },
   { name: 'Test Embed', href: '/test-embed', icon: BookOpenIcon },
 ];
@@ -82,7 +82,7 @@ export function Navigation() {
               Learn
             </Link>
             <Link
-              href="/workbooks/create"
+              href="/create"
               className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-sigma-green hover:bg-sigma-green-dark transition-colors"
             >
               Create
@@ -168,7 +168,7 @@ export function Navigation() {
                 Learn
               </Link>
               <Link
-                href="/workbooks/create"
+                href="/create"
                 className="block w-full text-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-sigma-green hover:bg-sigma-green-dark transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >

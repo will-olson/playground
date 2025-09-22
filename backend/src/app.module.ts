@@ -14,6 +14,8 @@ import { AdminModule } from './admin/admin.module';
 import { ReportsModule } from './reports/reports.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { SigmaModule } from './sigma/sigma.module';
+import { CommunityModule } from './community/community.module';
+import { CreateModule } from './create/create.module';
 import { UsersService } from './users/users.service';
 import { WorkbooksService } from './workbooks/workbooks.service';
 
@@ -68,6 +70,8 @@ import { WorkbooksService } from './workbooks/workbooks.service';
     ReportsModule,
     AnalyticsModule,
     SigmaModule,
+    CommunityModule,
+    CreateModule,
   ],
   controllers: [AppController],
   providers: [AppService, UsersService, WorkbooksService],
