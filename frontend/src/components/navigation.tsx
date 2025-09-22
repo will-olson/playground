@@ -17,22 +17,31 @@ import {
   UserCircleIcon
 } from '@heroicons/react/24/outline';
 
-const navigation = [
-  { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
-  { name: 'Community', href: '/community', icon: BookOpenIcon },
-  { name: 'Create', href: '/create', icon: PlusIcon },
-  { name: 'Import', href: '/onboarding', icon: Cog6ToothIcon },
-  { name: 'Test Embed', href: '/test-embed', icon: BookOpenIcon },
-];
-
 export function Navigation() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isClient, setIsClient] = useState(false);
   const { user, isAuthenticated, logout } = useAuthStore();
+
+  const navigation = [
+    { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
+    { name: 'Community', href: '/community', icon: BookOpenIcon },
+    { name: 'Create', href: '/create', icon: PlusIcon },
+    { name: 'Import', href: '/onboarding', icon: Cog6ToothIcon },
+    { name: 'Test Embed', href: '/test-embed', icon: BookOpenIcon },
+  ];
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handleLogout = () => {
     logout();
     window.location.href = '/';
   };
+
+  if (!isClient) {
+    return null; // Prevent hydration mismatch
+  }
 
   return (
     <nav className="bg-background-dark shadow-sm border-b border-border-light">
