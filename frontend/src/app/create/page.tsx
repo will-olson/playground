@@ -28,6 +28,7 @@ import {
   CheckCircle,
   AlertCircle
 } from 'lucide-react';
+import { CollaborativeEditor } from '@/components/collaborative-editor';
 
 interface WorkbookTemplate {
   id: string;
@@ -590,24 +591,23 @@ export default function CreatePage() {
 
           {/* Editor Tab */}
           <TabsContent value="editor" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Collaborative Editor</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-                  <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">Real-time Collaborative Editing</h3>
-                  <p className="text-gray-600 mb-4">
-                    Create and edit workbooks with your team in real-time
-                  </p>
-                  <Button disabled className="bg-gray-300 text-gray-500 cursor-not-allowed">
-                    <Users className="h-4 w-4 mr-2" />
-                    Coming Soon
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+            <CollaborativeEditor 
+              userEmail={userEmail}
+              workbookId={selectedTemplate?.id}
+              onWorkbookCreated={(workbookId, embedUrl) => {
+                console.log('Workbook created:', { workbookId, embedUrl });
+                if (showDebugMode) {
+                  setDebugResults(prev => [...prev, {
+                    workbookId,
+                    workbookName: selectedTemplate?.name || 'New Workbook',
+                    status: 'success',
+                    message: 'Collaborative editor launched successfully',
+                    embedUrl,
+                    jwtValid: true
+                  }]);
+                }
+              }}
+            />
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <Card>
@@ -618,19 +618,19 @@ export default function CreatePage() {
                   <div className="space-y-4">
                     <div className="flex items-center space-x-2">
                       <CheckCircle className="h-4 w-4 text-green-600" />
-                      <span className="text-sm text-gray-700">JWT-based authentication</span>
+                      <span className="text-sm text-gray-700">Breakthrough Sigma authentication</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <CheckCircle className="h-4 w-4 text-green-600" />
-                      <span className="text-sm text-gray-700">Custom permissions</span>
+                      <span className="text-sm text-gray-700">Real-time collaborative editing</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <CheckCircle className="h-4 w-4 text-green-600" />
-                      <span className="text-sm text-gray-700">Responsive design</span>
+                      <span className="text-sm text-gray-700">Full Sigma functionality access</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <CheckCircle className="h-4 w-4 text-green-600" />
-                      <span className="text-sm text-gray-700">Theme customization</span>
+                      <span className="text-sm text-gray-700">Internal user 2FA support</span>
                     </div>
                   </div>
                 </CardContent>
@@ -644,19 +644,19 @@ export default function CreatePage() {
                   <div className="space-y-4">
                     <div className="flex items-center space-x-2">
                       <CheckCircle className="h-4 w-4 text-green-600" />
-                      <span className="text-sm text-gray-700">Public portfolio</span>
+                      <span className="text-sm text-gray-700">Live collaborative sessions</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <CheckCircle className="h-4 w-4 text-green-600" />
-                      <span className="text-sm text-gray-700">Community sharing</span>
+                      <span className="text-sm text-gray-700">Real-time workbook editing</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <CheckCircle className="h-4 w-4 text-green-600" />
-                      <span className="text-sm text-gray-700">Export capabilities</span>
+                      <span className="text-sm text-gray-700">Team workspace sharing</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <CheckCircle className="h-4 w-4 text-green-600" />
-                      <span className="text-sm text-gray-700">Version control</span>
+                      <span className="text-sm text-gray-700">Instant collaboration</span>
                     </div>
                   </div>
                 </CardContent>
