@@ -11,7 +11,7 @@ import { Switch } from '@/components/ui/switch';
 
 export default function TestEmbedPage() {
   const [selectedWorkbook, setSelectedWorkbook] = useState('workbook-4osogXvjSNtZFo3DW2XYGs');
-  const [userEmail, setUserEmail] = useState('test@example.com');
+  const [userEmail, setUserEmail] = useState('will.olson@sigmacomputing.com');
   const [accountType, setAccountType] = useState('viewer');
   const [teams, setTeams] = useState('test-team');
   const [theme, setTheme] = useState('Light');

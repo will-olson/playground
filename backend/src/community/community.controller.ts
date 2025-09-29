@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, UseGuards, Request } from '@nestjs/common'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CommunityService } from './community.service';
 
-@Controller('api/v1/community')
+@Controller('community')
 @UseGuards(JwtAuthGuard)
 export class CommunityController {
   constructor(private readonly communityService: CommunityService) {}
